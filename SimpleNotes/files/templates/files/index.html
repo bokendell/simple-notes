@@ -1,0 +1,9 @@
+{% if file_list %}
+    <ul>
+    {% for file in file_list %}
+        <li><a href="{% url 'files:detail' file.id %}"/>{{ file.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No files are available.</p>
+{% endif %}

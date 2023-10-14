@@ -1,17 +1,27 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from django.views import generic
+
 from .models import File
 
 # Create your views here.
 
-def index(request):
-    file_list = File.objects.order_by('-created_at') 
-    output = ', '.join([f.name for f in file_list])
-    return HttpResponse(output)
+class IndexView(generic.ListView):
+    template_name = 'files/index.html'
+    context_object_name = 'file_list'
+    
+    def get_queryset(self):
+        """Return the last five created files."""
+        return File.objects.order_by('-created_at')[:5]
 
-def detail(request, file_id):
-    return HttpResponse("You're looking at file %s." % file_id)
+class DetailView(generic.DetailView):
+    model = File
+    template_name = 'files/detail.html'
 
-def results(request, file_id):
-    response = "You're looking at the results of file %s."
-    return HttpResponse(response % file_id)
+class ResultsView(generic.DetailView):
+    model = File
+    template_name = 'files/results.html'
+
+class UploadView(generic.DetailView):
+    model = File
+    template_name = 'files/upload.html'

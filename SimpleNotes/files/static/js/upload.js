@@ -1,0 +1,1 @@
+const fileSelect = document.getElementById('audioFile');
