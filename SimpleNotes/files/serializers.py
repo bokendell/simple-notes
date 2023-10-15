@@ -4,16 +4,15 @@ from django.contrib.auth.models import User
 
 from .models import File
 
-class UserSerializer(serializers.ModelSerializer):
-    files = serializers.PrimaryKeyRelatedField(many=True, queryset=File.objects.all())
-    
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    files = serializers.HyperlinkedIdentityField(many=True, view_name='file-detail', read_only=True, )    
     class Meta:
         model = User
-        fields = ['id', 'username', 'files']
+        fields = ['url', 'id', 'username', 'files']
 
-class FileSerializer(serializers.ModelSerializer):
+class FileSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = File
-        fields = ['id', 'name', 'owner', 'created_at', 'updated_at', 's3_url']
+        fields = ['url', 'id', 'name', 'owner', 'created_at', 'updated_at', 's3_url']

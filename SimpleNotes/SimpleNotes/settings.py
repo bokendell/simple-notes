@@ -32,8 +32,13 @@ ALLOWED_HOSTS = []
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
 )
-# Application definition
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

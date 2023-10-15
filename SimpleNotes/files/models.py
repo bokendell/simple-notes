@@ -7,7 +7,7 @@ class File(models.Model):
     owner = models.ForeignKey('auth.User', related_name='files', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    s3_url = models.CharField(max_length=200)
+    s3_url = models.URLField(max_length=200, blank=True)
     def __str__(self):
         return self.name
     
