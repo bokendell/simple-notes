@@ -14,7 +14,9 @@ export default function Signup(props) {
     const [password, setPassword] = useState("");
 
     const onChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
+        e.target.name === "username"
+            ? setUsername(e.target.value)
+            : setPassword(e.target.value);
     }
     
     const onSignupClick = () => {
