@@ -1,11 +1,10 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 from . import views
 
-router = DefaultRouter()
-router.register(r'files', views.FileViewSet, basename='file')
-router.register(r'users', views.UserViewSet, basename='user')
-
 urlpatterns = [
-    path('', include(router.urls)),
+    path('create/', views.createFile, name='CreateFile'),
+    path('<str:pk>/', views.getFile, name='File'),
+    path('update/<str:pk>/', views.updateFile, name='UpdateFile'),
+    path('delete/<str:pk>/', views.deleteFile, name='DeleteFile'),
+    path('', views.getFilesList, name='FilesList'),
 ]
