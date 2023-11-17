@@ -1,8 +1,7 @@
-"""
-URL configuration for backend project.
+"""auth_site URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+    https://docs.djangoproject.com/en/4.0/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -19,10 +18,9 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
-    path('api/token/verify/', TokenVerifyView.as_view(), name="token_verify"),
+    path('api/token/', TokenObtainPairView.as_view()),
+    path('api/token/refresh/', TokenRefreshView.as_view()),
+    path('api/token/verify/', TokenVerifyView.as_view()),
     path('api/users/', include('users.urls')),
-    path('api/files/', include('files.urls')),
+    path('admin/', admin.site.urls),
 ]
