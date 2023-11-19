@@ -7,9 +7,6 @@ const router = express.Router();
 router.post('/api/files/create/', async (req, res) => {
     const { access } = req.cookies;
     const { name, s3_url } = req.body;
-	console.log('name:', name);
-	console.log('s3_url:', s3_url);
-    console.log('Create File Body:', req.body);
 
     try {
         const apiRes = await fetch(`${process.env.API_URL}/api/files/create/`, {

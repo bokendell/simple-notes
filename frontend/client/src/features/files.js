@@ -50,36 +50,53 @@ export const uploadFile = createAsyncThunk(
     }
 });
 
-export const transcribeFile = createAsyncThunk(
-    'files/transcribe',
-    async ({file, mimetype}, thunkAPI) => {
-
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('mimetype', mimetype);
-
-            console.log('Body:', formData);
-            console.log('File:', file);
-            console.log('Mimetype:', mimetype);
-
-            const res = await fetch('/api/files/transcribe', {
-                method: 'POST',
-                body: formData,
-            });
-
-            const data = await res.json();
-
-            if (res.status === 200) {
-                return data;
-            } else {
-                return thunkAPI.rejectWithValue(data);
-            }
-        } catch (err) {
-            return thunkAPI.rejectWithValue(err.response.data);
-        }
+export const transcribeFile = createAsyncThunk('files/transcribe', async (formData, thunkAPI) => {
+    try {
+      const res = await fetch('/api/files/transcribe', {
+        method: 'POST',
+        body: formData, // formData directly as body
+      });
+  
+      const data = await res.json();
+  
+      if (res.status === 200) {
+        return data;
+      } else {
+        return thunkAPI.rejectWithValue(data);
+      }
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
     }
-);
+  });
+
+export const summarizeFile = createAsyncThunk('files/summarize', async ({ transcription, summary_type }, thunkAPI) => {
+    try {
+        const body = JSON.stringify({
+			transcription,
+			summary_type,
+		});
+
+        console.log("summary body", body);
+        const res = await fetch('/api/files/summarize', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body,
+        });
+
+        const data = await res.json();
+
+        if (res.status === 200) {
+            return data;
+        } else {
+            return thunkAPI.rejectWithValue(data);
+        }
+    } catch (err) {
+        return thunkAPI.rejectWithValue(err.response.data);
+    }
+});
 
 const initialState = {
     files: [],
@@ -109,7 +126,6 @@ const filesSlice = createSlice({
         })
         .addCase(uploadFile.fulfilled, (state, action) => {
             state.loading = false;
-            state.files.push(action.payload);
         })
         .addCase(uploadFile.rejected, (state, action) => {
             state.loading = false;
@@ -120,9 +136,18 @@ const filesSlice = createSlice({
         })
         .addCase(transcribeFile.fulfilled, (state, action) => {
             state.loading = false;
-            state.files.push(action.payload);
         })
         .addCase(transcribeFile.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        })
+        .addCase(summarizeFile.pending, state => {
+            state.loading = true;
+        })
+        .addCase(summarizeFile.fulfilled, (state, action) => {
+            state.loading = false;
+        })
+        .addCase(summarizeFile.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });
