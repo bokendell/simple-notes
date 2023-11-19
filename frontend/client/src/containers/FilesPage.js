@@ -2,21 +2,21 @@ import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import Layout from 'components/Layout';
 
-const DashboardPage = () => {
+const FilesPage = () => {
 	const { isAuthenticated, user, loading } = useSelector(state => state.user);
 
 	if (!isAuthenticated && !loading && user === null)
 		return <Navigate to='/login' />;
 
 	return (
-		<Layout title='SimpleNotes | Dashboard' content='Dashboard page'>
+		<Layout title='SimpleNotes | Files' content='Files page'>
 			{loading || user === null ? (
 				<div className='spinner-border text-primary' role='status'>
 					<span className='visually-hidden'>Loading...</span>
 				</div>
 			) : (
 				<>
-					<h1 className='mb-5'>Dashboard</h1>
+					<h1 className='mb-5'>Files</h1>
 					<p>User Details</p>
 					<ul>
 						<li>First Name: {user.first_name}</li>
@@ -29,4 +29,4 @@ const DashboardPage = () => {
 	);
 };
 
-export default DashboardPage;
+export default FilesPage;

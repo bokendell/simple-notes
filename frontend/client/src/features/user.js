@@ -20,15 +20,7 @@ export const register = createAsyncThunk(
 				body,
 			});
 
-			if (!res.ok) {
-				throw new Error(`HTTP error! Status: ${res.status}`);
-			  }
-
-			console.log('Response: ', res);
-
 			const data = await res.json();
-
-			console.log('Data: ', data);
 
 			if (res.status === 201) {
 				return data;
@@ -36,8 +28,7 @@ export const register = createAsyncThunk(
 				return thunkAPI.rejectWithValue(data);
 			}
 		} catch (err) {
-			console.error('Error:', err);
-			return thunkAPI.rejectWithValue(err.response?.data || 'An error occurred');
+			return thunkAPI.rejectWithValue(err.response.data);
 		}
 	}
 );

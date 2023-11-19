@@ -4,7 +4,7 @@ const fetch = (...args) =>
 
 const router = express.Router();
 
-router.get('/api/token/verify', async (req, res) => {
+router.get('/api/users/verify', async (req, res) => {
 	const { access } = req.cookies;
 
 	const body = JSON.stringify({

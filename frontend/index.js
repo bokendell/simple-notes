@@ -1,7 +1,5 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-
 const path = require('path');
 
 require('dotenv').config();
@@ -16,29 +14,6 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-
-app.use(
-	'/api',
-	createProxyMiddleware({
-	  target: 'http://127.0.0.1:8000',
-	  changeOrigin: true,
-	  pathRewrite: {
-		'^/api': '/api', // Rewrite '/api' prefix to be sent to the target
-	  },
-	})
-  );
-  
-
-
-app.use((req, res, next) => {
-	console.log('Incoming request:', req.url, req.method, req.headers, req.body);
-	next();
-  });
-
-app.use('/api', (req, res, next) => {
-	console.log('Outgoing request:', req.url, req.method, req.headers, req.body);
-	next();
-  });
 
 app.use(loginRoute);
 app.use(logoutRoute);

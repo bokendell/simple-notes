@@ -14,6 +14,11 @@ const Navbar = () => {
 				</NavLink>
 			</li>
 			<li className='nav-item'>
+				<NavLink className='nav-link' to='/files'>
+					Files
+				</NavLink>
+			</li>
+			<li className='nav-item'>
 				<a className='nav-link' href='#!' onClick={() => dispatch(logout())}>
 					Logout
 				</a>
@@ -40,7 +45,7 @@ const Navbar = () => {
 		<nav className='navbar navbar-expand-lg bg-light'>
 			<div className='container-fluid'>
 				<Link className='navbar-brand' to='/'>
-					Auth Site
+					SimpleNotes
 				</Link>
 				<button
 					className='navbar-toggler'
