@@ -10,6 +10,8 @@ const meRoute = require('./routes/auth/me');
 const registerRoute = require('./routes/auth/register');
 const verifyRoute = require('./routes/auth/verify');
 const filesRoute = require('./routes/files/files');
+const transcribeRoute = require('./routes/files/transcribeFile');
+const createFileRoute = require('./routes/files/createFile');
 
 const app = express();
 
@@ -22,6 +24,8 @@ app.use(meRoute);
 app.use(registerRoute);
 app.use(verifyRoute);
 app.use(filesRoute);
+app.use(transcribeRoute);
+app.use(createFileRoute);
 
 app.use(express.static('client/build'));
 app.get('*', (req, res) => {

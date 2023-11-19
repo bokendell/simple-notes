@@ -49,12 +49,15 @@ export const uploadFile = createAsyncThunk(
 
 export const transcribeFile = createAsyncThunk(
     'files/transcribe',
-    async (file, thunkAPI) => {
+    async ({file, mimetype}, thunkAPI) => {
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('mimetype', mimetype);
+
+        console.log('Form data:', formData);
 
         try {
-            const res = await fetch('/api/files/transcribe/', {
+            const res = await fetch('/api/files/transcribe', {
                 method: 'POST',
                 body: formData,
             });
@@ -92,6 +95,28 @@ const filesSlice = createSlice({
             state.files = action.payload;
         })
         .addCase(getFiles.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        })
+        .addCase(uploadFile.pending, state => {
+            state.loading = true;
+        })
+        .addCase(uploadFile.fulfilled, (state, action) => {
+            state.loading = false;
+            state.files.push(action.payload);
+        })
+        .addCase(uploadFile.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        })
+        .addCase(transcribeFile.pending, state => {
+            state.loading = true;
+        })
+        .addCase(transcribeFile.fulfilled, (state, action) => {
+            state.loading = false;
+            state.files.push(action.payload);
+        })
+        .addCase(transcribeFile.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });
