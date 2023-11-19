@@ -1,12 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getFiles } from 'features/user';
+import { getFiles } from 'features/files';
 import { Navigate } from 'react-router-dom';
 import Layout from 'components/Layout';
 
 const FilesPage = () => {
 	const dispatch = useDispatch();
-	const { isAuthenticated, user, loading, files } = useSelector(state => state.user);
+	const { files, loading, error } = useSelector(state => state.file);
+	const { isAuthenticated, user } = useSelector(state => state.user);
 
 	const formatDate = (dateString) => {
 		const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
@@ -29,13 +30,12 @@ const FilesPage = () => {
 			) : (
 				<>
 					<h1 className='mb-5'>Files</h1>
-					<p>User Files</p>
-					<table>
+					<table class="table">
 						<thead>
 							<tr>
-								<th>Name</th>
-								<th>Created</th>
-								<th>Updated</th>
+								<th scope='col'>Name</th>
+								<th scope='col'>Created</th>
+								<th scope='col'>Updated</th>
 								<th>URL</th>
 							</tr>
 						</thead>

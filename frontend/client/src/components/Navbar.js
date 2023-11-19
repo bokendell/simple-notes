@@ -15,7 +15,12 @@ const Navbar = () => {
 			</li>
 			<li className='nav-item'>
 				<NavLink className='nav-link' to='/files'>
-					Files
+					My Files
+				</NavLink>
+			</li>
+			<li className='nav-item'>
+				<NavLink className='nav-link' to='/files/create'>
+					New File
 				</NavLink>
 			</li>
 			<li className='nav-item'>

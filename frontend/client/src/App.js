@@ -8,6 +8,7 @@ import DashboardPage from 'containers/DashboardPage';
 import LoginPage from 'containers/LoginPage';
 import RegisterPage from 'containers/RegisterPage';
 import FilesPage from 'containers/FilesPage';
+import CreateFilePage from 'containers/CreateFilePage';
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const App = () => {
 				<Route path='/' element={<HomePage />} />
 				<Route path='/dashboard' element={<DashboardPage />} />
 				<Route path='/files' element={<FilesPage />} />
+				<Route path='/files/create' element={<CreateFilePage />} />
 				<Route path='/login' element={<LoginPage />} />
 				<Route path='/register' element={<RegisterPage />} />
 			</Routes>
