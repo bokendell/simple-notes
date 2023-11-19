@@ -18,23 +18,30 @@ const CreateFilePage = () => {
     setFileName(e.target.value);
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Ensure both file and file name are available
     if (file && fileName) {
-      // Dispatch the uploadFile action passing file name and S3 URL if applicable
-      dispatch(uploadFile({ name: fileName, s3_url: 'http://www.abc.com' /* Replace with actual URL */ })).then((response) => {
-        // Upon successful file upload, initiate transcription
-        if (response.payload) {
-          dispatch(transcribeFile(file, file.type)).then((transcriptionResponse) => {
-            // Upon successful transcription, update state with the transcription
-            if (transcriptionResponse.payload) {
-              setTranscription(transcriptionResponse.payload.transcription); // Replace with the correct path for the transcription data in the response
-            }
-          });
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('mimetype', file.type);
+
+        // Dispatch the uploadFile action passing file name and S3 URL if applicable
+        const uploadResponse = await dispatch(uploadFile({ name: fileName, s3_url: 'https://www.abc.com' /* Replace with actual URL */ }));
+
+        if (uploadResponse.payload) {
+          const transcriptionResponse = await dispatch(transcribeFile({ file: formData, mimetype: file.type }));
+
+          if (transcriptionResponse.payload) {
+            setTranscription(transcriptionResponse.payload.transcription);
+          }
         }
-      });
+      } catch (error) {
+        // Handle errors here
+        console.error(error);
+      }
     }
   };
 
@@ -44,7 +51,7 @@ const CreateFilePage = () => {
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="formFile" className="form-label">max 100mb</label>
-          <input className="form-control" type="file" accept='.mp3, .mp4, .m4a' id="formFile" onChange={handleFileChange} />
+          <input className="form-control" type="file" accept='.m4a, .mp4' id="formFile" onChange={handleFileChange} />
         </div>
         <div className="input-group mb-3">
           <span className="input-group-text">New File Name</span>

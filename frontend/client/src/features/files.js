@@ -29,10 +29,13 @@ export const uploadFile = createAsyncThunk(
 			name,
 			s3_url,
 		});
-
         const res = await fetch('/api/files/create/', {
             method: 'POST',
-            body: body,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body,
         });
 
         const data = await res.json();
@@ -50,13 +53,16 @@ export const uploadFile = createAsyncThunk(
 export const transcribeFile = createAsyncThunk(
     'files/transcribe',
     async ({file, mimetype}, thunkAPI) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('mimetype', mimetype);
-
-        console.log('Form data:', formData);
 
         try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('mimetype', mimetype);
+
+            console.log('Body:', formData);
+            console.log('File:', file);
+            console.log('Mimetype:', mimetype);
+
             const res = await fetch('/api/files/transcribe', {
                 method: 'POST',
                 body: formData,
@@ -73,7 +79,7 @@ export const transcribeFile = createAsyncThunk(
             return thunkAPI.rejectWithValue(err.response.data);
         }
     }
-)
+);
 
 const initialState = {
     files: [],
