@@ -9,6 +9,7 @@ const logoutRoute = require('./routes/auth/logout');
 const meRoute = require('./routes/auth/me');
 const registerRoute = require('./routes/auth/register');
 const verifyRoute = require('./routes/auth/verify');
+const filesRoute = require('./routes/files/files');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(logoutRoute);
 app.use(meRoute);
 app.use(registerRoute);
 app.use(verifyRoute);
+app.use(filesRoute);
 
 app.use(express.static('client/build'));
 app.get('*', (req, res) => {

@@ -54,6 +54,27 @@ const getUser = createAsyncThunk('users/me', async (_, thunkAPI) => {
 	}
 });
 
+export const getFiles = createAsyncThunk('files/', async (_, thunkAPI) => {
+	try {
+		const res = await fetch('/api/files/', {
+			method: 'GET',
+			headers: {
+				Accept: 'application/json',
+			},
+		});
+
+		const data = await res.json();
+
+		if (res.status === 200) {
+			return data;
+		} else {
+			return thunkAPI.rejectWithValue(data);
+		}
+	} catch (err) {
+		return thunkAPI.rejectWithValue(err.response.data);
+	}
+});
+
 export const login = createAsyncThunk(
 	'users/login',
 	async ({ email, password }, thunkAPI) => {
@@ -143,6 +164,7 @@ const initialState = {
 	user: null,
 	loading: false,
 	registered: false,
+	files: [],
 };
 
 const userSlice = createSlice({
@@ -204,6 +226,16 @@ const userSlice = createSlice({
 				state.user = null;
 			})
 			.addCase(logout.rejected, state => {
+				state.loading = false;
+			})
+			.addCase(getFiles.pending, state=> {
+				state.loading = true;
+			})
+			.addCase(getFiles.fulfilled, (state, action) => {
+				state.loading = false;
+				state.files = action.payload;
+			})
+			.addCase(getFiles.rejected, state => {
 				state.loading = false;
 			});
 	},
