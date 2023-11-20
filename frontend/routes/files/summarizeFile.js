@@ -24,10 +24,11 @@ router.post('/api/files/summarize', async (req, res) => {
             messages: [{role: 'system', content: summary_type + transcription}],
             model: "gpt-3.5-turbo-16k",
         });
-        console.log(JSON.parse(completion.choices[0]));
+        console.log("res", completion.choices[0]);
+        console.log(JSON.parse(completion.choices[0].message.content));
 
         // Send a response with the generated summary
-        return res.status(200).json(JSON.parse(completion.choices[0]));
+        return res.status(200).json(JSON.parse(completion.choices[0].message.content));
     } catch (error) {
         console.error("Error:", error);
         return res.status(500).json({ error: 'Internal Server Error' });

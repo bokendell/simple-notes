@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadFile, transcribeFile, summarizeFile } from 'features/files';
 import { Navigate } from 'react-router-dom';
+import PDFPreview from 'components/PDFPreview';
 import Layout from 'components/Layout';
 
 const CreateFilePage = () => {
@@ -12,6 +13,13 @@ const CreateFilePage = () => {
   const [summary, setSummary] = useState('');
   const { loading, error } = useSelector((state) => state.file);
   const { isAuthenticated, user } = useSelector(state => state.user);
+  const [font, setFont] = useState('');
+  const [fontSizeTitle, setFontSizeTitle] = useState(18);
+  const [fontSizeBody, setFontSizeBody] = useState(12);
+  const [lineSpacing, setLineSpacing] = useState(1.0);
+  const [margin, setMargin] = useState(1.0);
+  const [backgroundColor, setBackgroundColor] = useState('white');
+  const [bodyColor, setBodyColor] = useState('black');
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -20,6 +28,35 @@ const CreateFilePage = () => {
   const handleFileNameChange = (e) => {
     setFileName(e.target.value);
   }
+
+  const handleFontChange = (e) => {
+    setFont(e.target.value);
+  }
+
+  const handleFontSizeTitleChange = (e) => {
+    setFontSizeTitle(e.target.value);
+  }
+
+  const handleFontSizeBodyChange = (e) => {
+    setFontSizeBody(e.target.value);
+  }
+
+  const handleLineSpacingChange = (e) => {
+    setLineSpacing(e.target.value);
+  }
+
+  const handleMarginChange = (e) => {
+    setMargin(e.target.value);
+  }
+
+  const handleBackgroundColorChange = (e) => {
+    setBackgroundColor(e.target.value);
+  }
+
+  const handleBodyColorChange = (e) => {
+    setBodyColor(e.target.value);
+  }
+
 
   if (!isAuthenticated && !loading && user === null)
 		return <Navigate to='/login' />;
@@ -37,10 +74,10 @@ const CreateFilePage = () => {
         // Dispatch the uploadFile action passing file name and S3 URL if applicable
         const uploadResponse = await dispatch(uploadFile({ name: fileName, s3_url: 'https://www.abc.com' /* Replace with actual URL */ }));
         
-        const t = `I am writing an application that summarizes lecture transcriptions to get summaries of lectures. I will give you the lecture at the end of this message and only return the summary. The summary should have a title that encompasses the main idea of the lecture. A vocabulary section that has a bulleted list of important words/terms used in the lecture and their defintions with an indented bulleted example. Then the summary section will highlight the key information as well as any other insights you may add to it to aid in understanding. I you to return stricly a json object, where the Title contains the title, Vocabulary contains a list of vocabulary objects whose name is the vocab term and they contain a defintion property as found above and an example property as found above. Lastly Summary contains numbered objects that each contains the paragraphs from the summary found above. ONLY GIVE ME THE JSON OBJECT. DO NOT SAY OR RETURN ANY TEXT BEFORE OR AFTER THE JSON OBJECT.
+        const s = `I am writing an application that summarizes lecture transcriptions to get summaries of lectures. I will give you the lecture at the end of this message and only return the summary. The summary should have a title that encompasses the main idea of the lecture. A vocabulary section that has a bulleted list of important words/terms used in the lecture and their defintions with an indented bulleted example. Then the summary section will highlight the key information as well as any other insights you may add to it to aid in understanding. I you to return stricly a json object, where the Title contains the title, Vocabulary contains a list of vocabulary objects whose name is the vocab term and they contain a defintion property as found above and an example property as found above. Lastly Summary contains numbered objects that each contains the paragraphs from the summary found above. DO NOT WRAP THE GENERATED JSON AS A CODE BLOCK. ONLY THE TEXT ITSELF SHOULD BE SENT
 
-        Here is the lecture transcriptions:
-        In the last section, we examined some early aspects of memory. In this section, what we’re going to do is discuss some factors that influence memory. So let’s do that by beginning with the concept on slide two, and that concept is overlearning. Basically in overlearning, the idea is that you continue to study something after you can recall it perfectly. So you study some particular topic whatever that topic is. When you can recall it perfectly, you continue to study it.
+        Here is the lecture transcriptions:`;
+        const t = `In the last section, we examined some early aspects of memory. In this section, what we’re going to do is discuss some factors that influence memory. So let’s do that by beginning with the concept on slide two, and that concept is overlearning. Basically in overlearning, the idea is that you continue to study something after you can recall it perfectly. So you study some particular topic whatever that topic is. When you can recall it perfectly, you continue to study it.
         This is a classic way to help when one is taking comprehensive finals later in the semester. So when you study for exam one and after you really know it all, you continue to study it. That will make your comprehensive final easier.
         The next factor that will influence memory relates to what we call organization. In general, if you can organize material, you can recall it better. There are lots of different types of organizational strategies and I’ve listed those on slide four. So let’s begin by talking about the first organizational strategy called clustering and is located on page five.
         In clustering, basically you recall items better if you can recognize that there are two or more types of things in a particular list. So let’s give a couple of lists and show you some examples of that. These examples are shown in slide six.
@@ -86,7 +123,7 @@ const CreateFilePage = () => {
         // }
 
         if (transcription) {
-          const summarizeResponse = await dispatch(summarizeFile({transcription: transcription, summary_type: ""}));
+          const summarizeResponse = await dispatch(summarizeFile({transcription: transcription, summary_type: s}));
 
           if (summarizeResponse.payload) {
             setSummary(summarizeResponse.payload.message.content);
@@ -98,6 +135,9 @@ const CreateFilePage = () => {
       }
     }
   };
+
+
+
 
   return (
     <Layout title='SimpleNotes | New File' content='Create File Page'>
@@ -112,7 +152,63 @@ const CreateFilePage = () => {
           <input type="text" className="form-control" aria-label="File Name" value={fileName} onChange={handleFileNameChange} />
           <button type="submit" className='btn btn-outline-primary'>Create</button>
         </div>
+        <h3>PDF settings</h3>
+        <h4>Font</h4>
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupSelect01">Style</label>
+          <select class="form-select" id="inputGroupSelect01" onChange={handleFontChange} >
+            <option selected>Choose...</option>
+            <option value={"Times New Roman"}>Times New Roman</option>
+            <option value={"Sans-Serif"}>Sans-Serif</option>
+            <option value={"Helvetica"}>Helvetica</option>
+          </select>
+        </div>
+        <div className="input-group mb-3">
+          <span className="input-group-text" id="basic-addon1">Title</span>
+          <input type='number' min={0} max={50} defaultValue={18} onChange={handleFontSizeTitleChange} className="form-control" placeholder="Title Font" aria-label="Title Font" aria-describedby="basic-addon1"></input>
+          <span className="input-group-text" id="basic-addon1">Body</span>
+          <input type='number' min={0} max={50} defaultValue={12} onChange={handleFontSizeBodyChange} className="form-control" placeholder="Body Font" aria-label="Body Font" aria-describedby="basic-addon1"></input>
+        </div>
+        <h4>Spacing</h4>
+        <div className="input-group mb-3">
+        <label class="input-group-text" for="inputGroupSelect01">Line</label>
+          <select class="form-select" id="inputGroupSelect01" onChange={handleLineSpacingChange}>
+            <option selected>Choose...</option>
+            <option value="1.0">1.0</option>
+            <option value="1.15">1.15</option>
+            <option value="1.5">1.5</option>
+            <option value="2.0">2.0</option>
+            <option value="2.5">2.5</option>
+            <option value="3.0">3.0</option>
+          </select>
+          <label class="input-group-text" for="inputGroupSelect01">Margin</label>
+          <select class="form-select" id="inputGroupSelect01" onChange={handleMarginChange}>
+            <option selected>Choose...</option>
+            <option value="0.5">0.5</option>
+            <option value="1.0">1.0</option>
+            <option value="1.15">1.15</option>
+            <option value="1.5">1.5</option>
+          </select>
+        </div>
+        <h4>Color</h4>
+        <div className="input-group mb-3">
+          <span className="input-group-text" id="basic-addon1">Background</span>
+          <input type="color" class="form-control form-control-color" onChange={handleBackgroundColorChange} id="background-color-input" value="black" title="Choose your color"></input>
+          <span className="input-group-text" id="basic-addon1">Body</span>
+          <input type="color" class="form-control form-control-color" onChange={handleBodyColorChange} id="body-color-input" value="black" title="Choose your color"></input>
+        </div>
       </form>
+
+      <h3>Preview</h3>
+      <PDFPreview
+        font={font}
+        fontSizeTitle={fontSizeTitle}
+        fontSizeBody={fontSizeBody}
+        lineSpacing={lineSpacing}
+        margin={margin}
+        backgroundColor={backgroundColor}
+        bodyColor={bodyColor}
+      />
 
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
@@ -124,6 +220,7 @@ const CreateFilePage = () => {
           <p>{summary}</p>
         </div>
       )}
+      
     </Layout>
   );
 };
