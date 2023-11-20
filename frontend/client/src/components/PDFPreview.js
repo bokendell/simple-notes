@@ -12,7 +12,6 @@ const PDFPreview = ({ font, fontSizeTitle, fontSizeBody, lineSpacing, margin, ba
         const MyDocument = (
         <Document>
             <Page size="A4">
-            
             <View style={{ flexDirection: 'column', alignItems: 'center', backgroundColor }}>
                 <Text style={{ fontSize: fontSizeTitle, marginBottom: 10, color: bodyColor }}>Main Title</Text>
                 <View style={{ width: '80%', marginBottom: 10 }}>

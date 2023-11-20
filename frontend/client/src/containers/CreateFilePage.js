@@ -147,11 +147,6 @@ const CreateFilePage = () => {
           <label htmlFor="formFile" className="form-label">max 100mb</label>
           <input className="form-control" type="file" accept='.m4a, .mp4' id="formFile" onChange={handleFileChange} />
         </div>
-        <div className="input-group mb-3">
-          <span className="input-group-text">New File Name</span>
-          <input type="text" className="form-control" aria-label="File Name" value={fileName} onChange={handleFileNameChange} />
-          <button type="submit" className='btn btn-outline-primary'>Create</button>
-        </div>
         <h3>PDF settings</h3>
         <h4>Font</h4>
         <div class="input-group mb-3">
@@ -193,9 +188,14 @@ const CreateFilePage = () => {
         <h4>Color</h4>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon1">Background</span>
-          <input type="color" class="form-control form-control-color" onChange={handleBackgroundColorChange} id="background-color-input" value="black" title="Choose your color"></input>
+          <input type="color" class="form-control form-control-color" onChange={handleBackgroundColorChange} id="background-color-input" defaultValue="white" title="Choose your color"></input>
           <span className="input-group-text" id="basic-addon1">Body</span>
-          <input type="color" class="form-control form-control-color" onChange={handleBodyColorChange} id="body-color-input" value="black" title="Choose your color"></input>
+          <input type="color" class="form-control form-control-color" onChange={handleBodyColorChange} id="body-color-input" defaultValue="black" title="Choose your color"></input>
+        </div>
+        <div className="input-group mb-3">
+          <span className="input-group-text">New File Name</span>
+          <input type="text" className="form-control" aria-label="File Name" value={fileName} onChange={handleFileNameChange} />
+          <button type="submit" className='btn btn-outline-primary'>Create</button>
         </div>
       </form>
 
