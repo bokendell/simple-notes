@@ -1,24 +1,30 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { getFiles } from 'features/files';
+import { getFiles, deleteFile } from 'features/files';
 import { Navigate } from 'react-router-dom';
 import Layout from 'components/Layout';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+
 
 const FilesPage = () => {
 	const dispatch = useDispatch();
 	const { files, loading, error } = useSelector(state => state.file);
 	const { isAuthenticated, user } = useSelector(state => state.user);
 	const [selectedRows, setSelectedRows] = useState([]);
+	const [sortBy, setSortBy] = useState('');
+	const [sortOrder, setSortOrder] = useState('');
 
 	const formatDate = (dateString) => {
-		const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+		const options = { year: 'numeric', month: 'short', day: 'numeric'};
 		return new Date(dateString).toLocaleDateString(undefined, options);
 	  };
 
 	useEffect(() => {
 		dispatch(getFiles());
 	}, [dispatch]);
+
 
 	if (!isAuthenticated && !loading && user === null)
 		return <Navigate to='/login' />;
@@ -34,12 +40,44 @@ const FilesPage = () => {
 	};
 	
 	const handleDelete = () => {
-	// Logic to handle deletion of selected rows
-	// Use the selectedRows state for deletion
-	console.log('Deleting rows:', selectedRows);
-	// Perform deletion here
-	setSelectedRows([]); // Clear selected rows after deletion
+		// Logic to handle deletion of selected rows
+		// Use the selectedRows state for deletion
+		console.log('Deleting rows:', selectedRows);
+		selectedRows.forEach(id => {
+			dispatch(deleteFile(id));
+
+		});
+		// Perform deletion here
+		setSelectedRows([]); // Clear selected rows after deletion
 	};
+
+	const handleSort = (columnName) => {
+		if (sortBy === columnName) {
+		  // Reverse the order if the same column is clicked again
+		  setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+		} else {
+		  // Set the new sorting column
+		  setSortBy(columnName);
+		  setSortOrder('asc');
+		}
+	  };
+
+	  const sortedFiles = [...files].sort((a, b) => {
+		const aValue = a[sortBy];
+		const bValue = b[sortBy];
+	  
+		if (sortBy === 'created_at' || sortBy === 'updated_at') {
+		  // Assuming createdAt and updatedAt are dates
+		  return sortOrder === 'asc' ? new Date(aValue) - new Date(bValue) : new Date(bValue) - new Date(aValue);
+		} else {
+		  // For string-based sorting (name, URL)
+		  if (!aValue || !bValue) {
+			return 0; // If any value is missing or undefined, retain the order
+		  }
+		  return sortOrder === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+		}
+	  });
+	  
 	
 	return (
 		<Layout title='SimpleNotes | Files' content='Files page'>
@@ -57,20 +95,38 @@ const FilesPage = () => {
 					</button>
 				)}
 				</div>
-				<table className="table">
+				<table className="table table-hover table-sortable">
 				{/* Table headers */}
 				<thead>
 					<tr>
-					<th scope='col'></th> {/* Toggle column */}
-					<th scope='col'>Name</th>
-					<th scope='col'>Created</th>
-					<th scope='col'>Updated</th>
-					<th>URL</th>
+						<th scope='col'></th> {/* Toggle column */}
+						<th scope='col' onClick={() => handleSort('name')}>
+    						Name
+							{sortBy === 'name' && (
+								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
+							)}
+						</th>
+						<th scope='col' onClick={() => handleSort('created_at')}>
+							Created
+							{sortBy === 'created_at' && (
+								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
+							)}
+						</th>
+						<th scope='col' onClick={() => handleSort('updated_at')}>Updated
+							{sortBy === 'updated_at' && (
+								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
+							)}
+						</th>
+						<th scope='col' onClick={() => handleSort('s3_url')}>
+    						URL
+							{sortBy === 's3_url' && (
+								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
+							)}
+						</th>
 					</tr>
 				</thead>
 				<tbody>
-					{/* Table rows */}
-					{files && files.map(file => (
+					{sortedFiles.map(file => (
 					<tr key={file.id}>
 						<td>
 						<input
@@ -80,8 +136,8 @@ const FilesPage = () => {
 						/>
 						</td>
 						<td>{file.name}</td>
-						<td>{formatDate(file.createdAt)}</td>
-						<td>{formatDate(file.updatedAt)}</td>
+						<td>{formatDate(file.created_at)}</td>
+						<td>{formatDate(file.updated_at)}</td>
 						<td>{file.s3_url}</td>
 					</tr>
 					))}

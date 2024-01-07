@@ -72,9 +72,9 @@ const CreateFilePage = () => {
         formData.append('mimetype', file.type);
 
         // Dispatch the uploadFile action passing file name and S3 URL if applicable
-        const uploadResponse = await dispatch(uploadFile({ name: fileName, s3_url: 'https://www.abc.com' /* Replace with actual URL */ }));
+        // const uploadResponse = await dispatch(uploadFile({ name: fileName, s3_url: 'https://www.abc.com' /* Replace with actual URL */ }));
         
-        const s = `I am writing an application that summarizes lecture transcriptions to get summaries of lectures. I will give you the lecture at the end of this message and only return the summary. The summary should have a title that encompasses the main idea of the lecture. A vocabulary section that has a bulleted list of important words/terms used in the lecture and their defintions with an indented bulleted example. Then the summary section will highlight the key information as well as any other insights you may add to it to aid in understanding. I you to return stricly a json object, where the Title contains the title, Vocabulary contains a list of vocabulary objects whose name is the vocab term and they contain a defintion property as found above and an example property as found above. Lastly Summary contains numbered objects that each contains the paragraphs from the summary found above. DO NOT WRAP THE GENERATED JSON AS A CODE BLOCK. ONLY THE TEXT ITSELF SHOULD BE SENT
+        const s = `I am writing an application that summarizes lecture transcriptions to get summaries of lectures. I will give you the lecture at the end of this message and only return the summary. The summary should have a title that encompasses the main idea of the lecture. A vocabulary section that has a bulleted list of important words/terms used in the lecture and their defintions with an indented bulleted example. Then the summary section will highlight the key information as well as any other insights you may add to it to aid in understanding. I want you to return strictly a json object, where the Title contains the title, Vocabulary contains a list of vocabulary objects whose name is the vocab term and they contain a defintion property as found above and an example property as found above. Lastly Summary contains numbered objects that each contains the paragraphs from the summary found above. DO NOT WRAP THE GENERATED JSON AS A CODE BLOCK. ONLY THE TEXT ITSELF SHOULD BE SENT
 
         Here is the lecture transcriptions:`;
         const t = `In the last section, we examined some early aspects of memory. In this section, what we’re going to do is discuss some factors that influence memory. So let’s do that by beginning with the concept on slide two, and that concept is overlearning. Basically in overlearning, the idea is that you continue to study something after you can recall it perfectly. So you study some particular topic whatever that topic is. When you can recall it perfectly, you continue to study it.
@@ -126,8 +126,9 @@ const CreateFilePage = () => {
           const summarizeResponse = await dispatch(summarizeFile({transcription: transcription, summary_type: s}));
 
           if (summarizeResponse.payload) {
-            setSummary(summarizeResponse.payload.message.content);
+            setSummary(summarizeResponse.payload);
           }
+          console.log((summary));
         }
       } catch (error) {
         // Handle errors here
@@ -217,7 +218,16 @@ const CreateFilePage = () => {
           <h3>Transcription:</h3>
           <p>{transcription}</p>
           <h3>Summary:</h3>
-          <p>{summary}</p>
+          <PDFPreview
+          font={font}
+          fontSizeTitle={fontSizeTitle}
+          fontSizeBody={fontSizeBody}
+          lineSpacing={lineSpacing}
+          margin={margin}
+          backgroundColor={backgroundColor}
+          bodyColor={bodyColor}
+        />
+          {console.log(summary)}
         </div>
       )}
       

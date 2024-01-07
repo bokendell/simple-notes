@@ -50,6 +50,23 @@ export const uploadFile = createAsyncThunk(
     }
 });
 
+export const deleteFile = createAsyncThunk('files/delete', async (id, thunkAPI) => {
+    try {
+        const res = await fetch(`/api/files/delete/${id}`, {
+            method: 'DELETE',
+        });
+        const data = await res.json();
+
+        if (res.status === 200) {
+            return data;
+        } else {
+            return thunkAPI.rejectWithValue(data);
+        }
+    } catch (err) {
+        return thunkAPI.rejectWithValue(err.response.data);
+    }
+});
+
 export const transcribeFile = createAsyncThunk('files/transcribe', async (formData, thunkAPI) => {
     try {
       const res = await fetch('/api/files/transcribe', {
@@ -148,6 +165,16 @@ const filesSlice = createSlice({
             state.loading = false;
         })
         .addCase(summarizeFile.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        })
+        .addCase(deleteFile.pending, state => {
+            state.loading = true;
+        })
+        .addCase(deleteFile.fulfilled, (state, action) => {
+            state.loading = false;
+        })
+        .addCase(deleteFile.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });

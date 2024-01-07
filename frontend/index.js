@@ -13,6 +13,7 @@ const filesRoute = require('./routes/files/files');
 const transcribeRoute = require('./routes/files/transcribeFile');
 const createFileRoute = require('./routes/files/createFile');
 const summarizeFileRoute = require('./routes/files/summarizeFile');
+const deleteFileRoute = require('./routes/files/deleteFile');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(filesRoute);
 app.use(transcribeRoute);
 app.use(createFileRoute);
 app.use(summarizeFileRoute);
+app.use(deleteFileRoute);
 
 app.use(express.static('client/build'));
 app.get('*', (req, res) => {
