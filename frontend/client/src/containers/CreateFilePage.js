@@ -20,6 +20,29 @@ const CreateFilePage = () => {
   const [margin, setMargin] = useState(1.0);
   const [backgroundColor, setBackgroundColor] = useState('white');
   const [bodyColor, setBodyColor] = useState('black');
+  const [title, setTitle] = useState('Factors that Enhance Learning');
+  const [vocabulary, setVocabulary] = useState([
+    {
+      Term: 'Active Recall',
+      Definition: 'Recalling information actively from memory',
+      Example: 'Recalling answers to questions without looking at the textbook'
+    },
+    {
+      Term: 'Interleaved Practice',
+      Definition: 'Mixing different topics or subjects during study sessions',
+      Example: 'Studying math problems, then switching to history, and then back to math'
+    },
+    {
+      Term: 'Spacing Effect',
+      Definition: 'Distributing study sessions over time for better retention',
+      Example: 'Studying a language for 30 minutes every day instead of 3 hours once a week'
+    }
+  ]);
+  const [summaryType, setSummaryType] = useState({
+    '1': 'Active recall involves actively retrieving information from memory.',
+    '2': 'Interleaved practice is the practice of mixing different topics or subjects during study sessions.',
+    '3': 'The spacing effect suggests that spacing study sessions over time improves retention.'
+  });
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -127,6 +150,9 @@ const CreateFilePage = () => {
 
           if (summarizeResponse.payload) {
             setSummary(summarizeResponse.payload);
+            setTitle(summarizeResponse.payload.Title);
+            setVocabulary(summarizeResponse.payload.Vocabulary);
+            setSummaryType(summarizeResponse.payload.Summary);
           }
           console.log((summary));
         }
@@ -136,8 +162,6 @@ const CreateFilePage = () => {
       }
     }
   };
-
-
 
 
   return (
@@ -200,8 +224,14 @@ const CreateFilePage = () => {
         </div>
       </form>
 
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
+
       <h3>Preview</h3>
       <PDFPreview
+        title = {title}
+        vocabulary = {vocabulary}
+        summary = {summaryType}
         font={font}
         fontSizeTitle={fontSizeTitle}
         fontSizeBody={fontSizeBody}
@@ -213,23 +243,8 @@ const CreateFilePage = () => {
 
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
-      {transcription && summary &&(
-        <div>
-          <h3>Transcription:</h3>
-          <p>{transcription}</p>
-          <h3>Summary:</h3>
-          <PDFPreview
-          font={font}
-          fontSizeTitle={fontSizeTitle}
-          fontSizeBody={fontSizeBody}
-          lineSpacing={lineSpacing}
-          margin={margin}
-          backgroundColor={backgroundColor}
-          bodyColor={bodyColor}
-        />
-          {console.log(summary)}
-        </div>
-      )}
+      {/* {transcription && summary &&(
+      )} */}
       
     </Layout>
   );

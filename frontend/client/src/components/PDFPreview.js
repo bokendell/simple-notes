@@ -1,6 +1,6 @@
 import { Document, Page, Text, View, PDFViewer, StyleSheet, Font } from '@react-pdf/renderer';
 
-const PDFPreview = ({ font, fontSizeTitle, fontSizeBody, lineSpacing, margin, backgroundColor, bodyColor }) => {
+const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeBody, lineSpacing, margin, backgroundColor, bodyColor }) => {
     // Register the font
     Font.register({
         family: font,
@@ -12,17 +12,34 @@ const PDFPreview = ({ font, fontSizeTitle, fontSizeBody, lineSpacing, margin, ba
         const MyDocument = (
         <Document>
             <Page size="A4">
-                <View style={{ flexDirection: 'column', alignItems: 'center', backgroundColor }}>
-                    <Text style={{ fontSize: fontSizeTitle, marginBottom: 10, color: bodyColor }}>Main Title</Text>
-                    <View style={{ width: '80%', marginBottom: 10 }}>
-                    <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor }}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.
-                        Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor.
-                        Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta
-                        lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor
-                        sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed,
-                        adipiscing id dolor.
-                    </Text>
+                <View style={{ flexDirection: 'column', alignItems: 'center', backgroundColor, margin: margin }}>
+                    <Text style={{ fontSize: fontSizeTitle, marginBottom: 10, color: bodyColor }}>{title}</Text>
+                    
+                    <View style={{ width: '80%', marginTop: 20 }}>
+                        <Text style={{ fontSize: (fontSizeBody + 4), marginBottom: 10, color: bodyColor }}>Terms</Text>
+                    </View>
+                    {vocabulary.map((item, index) => (
+                        <View key={index} style={{ width: '80%', marginBottom: 10 }}>
+                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, fontWeight: 'bold' }}>
+                                {item.Term}:
+                            </Text>
+                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10 }}>
+                                definition: {item.Definition}
+                            </Text>
+                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10 }}>
+                                example: {item.Example}
+                            </Text>
+                        </View>
+                    ))}
+
+                    {/* Summary section */}
+                    <View style={{ width: '80%', marginTop: 20 }}>
+                        <Text style={{ fontSize: (fontSizeBody + 4), marginBottom: 10, color: bodyColor }}>Summary</Text>
+                        {Object.keys(summary).map((key) => (
+                        <Text key={key} style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10}}>
+                            - {summary[key]}
+                        </Text>
+                        ))}
                     </View>
                 </View>
             </Page>
