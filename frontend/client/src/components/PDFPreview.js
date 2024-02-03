@@ -3,9 +3,10 @@ import { Document, Page, Text, View, PDFViewer, StyleSheet, Font } from '@react-
 const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeBody, lineSpacing, margin, backgroundColor, bodyColor }) => {
     // Register the font
     Font.register({
-        family: font,
-        src: `https://fonts.gstatic.com/s/${font}/v14/${font}-regular.ttf`,
+        family: 'OpenSans',
+        src: 'https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFVZ0e.ttf',
     });
+    
 
     const generatePDF = () => {
         // Generate the PDF content based on the settings
@@ -13,20 +14,21 @@ const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeB
         <Document>
             <Page size="A4">
                 <View style={{ flexDirection: 'column', alignItems: 'center', backgroundColor, margin: margin }}>
-                    <Text style={{ fontSize: fontSizeTitle, marginBottom: 10, color: bodyColor }}>{title}</Text>
+                    <Text style={{ fontSize: fontSizeTitle, marginBottom: 10, color: bodyColor, fontFamily: font }}>{title}</Text>
                     
                     <View style={{ width: '80%', marginTop: 20 }}>
                         <Text style={{ fontSize: (fontSizeBody + 4), marginBottom: 10, color: bodyColor }}>Terms</Text>
+                        {console.log(fontSizeBody)}
                     </View>
                     {vocabulary.map((item, index) => (
                         <View key={index} style={{ width: '80%', marginBottom: 10 }}>
-                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, fontWeight: 'bold' }}>
+                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, fontWeight: 'bold', fontFamily: font }}>
                                 {item.Term}:
                             </Text>
-                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10 }}>
+                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10, fontFamily: font }}>
                                 definition: {item.Definition}
                             </Text>
-                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10 }}>
+                            <Text style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10, fontFamily: font }}>
                                 example: {item.Example}
                             </Text>
                         </View>
@@ -34,9 +36,9 @@ const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeB
 
                     {/* Summary section */}
                     <View style={{ width: '80%', marginTop: 20 }}>
-                        <Text style={{ fontSize: (fontSizeBody + 4), marginBottom: 10, color: bodyColor }}>Summary</Text>
+                        <Text style={{ fontSize: (fontSizeBody + 4), marginBottom: 10, color: bodyColor, fontFamily: font }}>Summary</Text>
                         {Object.keys(summary).map((key) => (
-                        <Text key={key} style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10}}>
+                        <Text key={key} style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10, fontFamily: font}}>
                             - {summary[key]}
                         </Text>
                         ))}
@@ -52,9 +54,10 @@ const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeB
     const pdfData = generatePDF();
 
     return (
-        <PDFViewer style={{ width: '100%', height: '500px' }}>
-        {pdfData}
-        </PDFViewer>
+        // <PDFViewer style={{ width: '100%', height: '500px' }}>
+        // {pdfData}
+        // </PDFViewer>
+        pdfData
     );
 };
 

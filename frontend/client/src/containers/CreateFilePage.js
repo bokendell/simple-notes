@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadFile, transcribeFile, summarizeFile } from 'features/files';
 import { Navigate } from 'react-router-dom';
+import { BlobProvider, PDFViewer } from '@react-pdf/renderer';
 import PDFPreview from 'components/PDFPreview';
 import Layout from 'components/Layout';
 
@@ -11,8 +12,10 @@ const CreateFilePage = () => {
   const [fileName, setFileName] = useState('');
   const [transcription, setTranscription] = useState('');
   const [summary, setSummary] = useState('');
-  const { loading, error } = useSelector((state) => state.file);
+  const { loading, error, summarized, transcribed } = useSelector((state) => state.file);
   const { isAuthenticated, user } = useSelector(state => state.user);
+  const [downloadLink, setDownloadLink] = useState(null);
+  const [pdfBlob, setPdfBlob] = useState(null);
   const [font, setFont] = useState('');
   const [fontSizeTitle, setFontSizeTitle] = useState(18);
   const [fontSizeBody, setFontSizeBody] = useState(12);
@@ -80,9 +83,61 @@ const CreateFilePage = () => {
     setBodyColor(e.target.value);
   }
 
+  useEffect(() => {
+    getDownloadLink();
+  }, [fileName]);
+
+  const pdfExport = useRef(null);
 
   if (!isAuthenticated && !loading && user === null)
 		return <Navigate to='/login' />;
+
+  const getDocument = () => {
+    return <PDFPreview
+    title = {title}
+    vocabulary = {vocabulary}
+    summary = {summaryType}
+    font={font}
+    fontSizeTitle={fontSizeTitle}
+    fontSizeBody={fontSizeBody}
+    lineSpacing={lineSpacing}
+    margin={margin}
+    backgroundColor={backgroundColor}
+    bodyColor={bodyColor}
+    />
+  }
+
+  
+  const getDownloadLink = async () => {
+    setDownloadLink(
+      <BlobProvider document={getDocument()}>
+        {({ blob, url, loading, error }) => {
+          if (blob) {
+            setPdfBlob(blob);
+          }
+          if (!loading && url) {
+            return <a href={url} download={`${fileName}.pdf`} style={{ textDecoration: 'none' }}>download</a>;
+          } else {
+            return <div className="spinner-grow text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>;
+          }
+        }}
+      </BlobProvider>
+    );
+  };
+
+  const handleUploadFile = async () => {
+    if (pdfBlob) {
+      const formData = new FormData();
+      formData.append('file', pdfBlob, `${fileName}.pdf`);
+      console.log('formData', formData);
+      // perform the upload
+    }
+    else {
+      console.log('pdfBlob is not set');
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -94,12 +149,8 @@ const CreateFilePage = () => {
         formData.append('file', file);
         formData.append('mimetype', file.type);
 
-        // Dispatch the uploadFile action passing file name and S3 URL if applicable
-        // const uploadResponse = await dispatch(uploadFile({ name: fileName, s3_url: 'https://www.abc.com' /* Replace with actual URL */ }));
-        
-        const s = `I am writing an application that summarizes lecture transcriptions to get summaries of lectures. I will give you the lecture at the end of this message and only return the summary. The summary should have a title that encompasses the main idea of the lecture. A vocabulary section that has a bulleted list of important words/terms used in the lecture and their defintions with an indented bulleted example. Then the summary section will highlight the key information as well as any other insights you may add to it to aid in understanding. I want you to return strictly a json object, where the Title contains the title, Vocabulary contains a list of vocabulary objects whose name is the vocab term and they contain a defintion property as found above and an example property as found above. Lastly Summary contains numbered objects that each contains the paragraphs from the summary found above. DO NOT WRAP THE GENERATED JSON AS A CODE BLOCK. ONLY THE TEXT ITSELF SHOULD BE SENT
+        const s = `I am writing an application that summarizes lecture transcriptions to get summaries of lectures. I will give you the lecture at the end of this message and only return the summary. The summary should have a title that encompasses the main idea of the lecture. A vocabulary section that has a bulleted list of important words/terms used in the lecture and their defintions with an indented bulleted example. Then the summary section will highlight the key information as well as any other insights you may add to it to aid in understanding. I want you to return strictly a json object, where the Title contains the title, Vocabulary contains a list of vocabulary objects whose name is the vocab term and they contain a defintion property as found above and an example property as found above. Lastly Summary contains numbered objects that each contains the paragraphs from the summary found above. DO NOT WRAP THE GENERATED JSON AS A CODE BLOCK. ONLY THE TEXT ITSELF SHOULD BE SENT. Here is the lecture transcription:`;
 
-        Here is the lecture transcriptions:`;
         const t = `In the last section, we examined some early aspects of memory. In this section, what we’re going to do is discuss some factors that influence memory. So let’s do that by beginning with the concept on slide two, and that concept is overlearning. Basically in overlearning, the idea is that you continue to study something after you can recall it perfectly. So you study some particular topic whatever that topic is. When you can recall it perfectly, you continue to study it.
         This is a classic way to help when one is taking comprehensive finals later in the semester. So when you study for exam one and after you really know it all, you continue to study it. That will make your comprehensive final easier.
         The next factor that will influence memory relates to what we call organization. In general, if you can organize material, you can recall it better. There are lots of different types of organizational strategies and I’ve listed those on slide four. So let’s begin by talking about the first organizational strategy called clustering and is located on page five.
@@ -131,9 +182,7 @@ const CreateFilePage = () => {
         When I was in grad school many, many years ago, I drank a lot of Coca Cola, but I knew exactly how my body felt when I was taking the exam and when I was drinking the Coke while studying. If my Coca Cola level was off, I did poorer on the exam.
         Now a related variable is if you don’t study while drinking coffee, but take the exam on coffee, what happens? Well what happens is that you don’t recall as well (and the same is true with smoking). Since people aren’t allowed to smoke in auditoriums or wherever they are taking exams, it’s best not to smoke when you’re studying.
         Now this concept relates to a concept that is called test anxiety and in test anxiety, what you’re doing is something very similar, and this is shown in slide 37. In test anxiety, basically while you’re studying you tend to be relaxed, but when you’re taking the exam, you tend to get tense due to the stress of the exam. When you’re tense, what happens? Your blood pressure goes up, different hormones are released, etc. As a result, your mind goes “poof” and everything’s gone. Then what happens when you get done with the exam. You walk out, you begin to relax, and guess what happens, you can recall the information again.
-        So, the best way to help yourself is to learn to stay relaxed while you’re taking your exam. If you have problems doing that, participate in a test anxiety workshop. There are a variety of those located at a variety of different settings. Furthermore, any good clinical or counseling psychologist can help you with that.
-        Now the next variable that relates to factors that influence learning and memory relates to spaced practice being better than massed practice (or what is called cramming). This is shown on slide 39. In general, it’s better to spread out studying over a period of time instead of doing it all at once. Let’s give an example of that on slide 40. Basically studying three days for one hour is better than studying three hours all at once. That is, don’t cram for the exam. The question then becomes why? As we show in slide 41, the reason you have problems is because of the serial position curve. Generally you can only recall seven plus or minus two items in your memory, so when you’re cramming, basically what you’re doing is putting in information into your short term memory. Thus what you have is recalling of recency effect items.
-        So in summary as we see here in the last few minutes is that there’s a variety of different factors that influence memory. Each of these factors is extremely important and ones that you should remember. In the next section, we’re going to begin to examine some early theories of memory and how those theories work.`
+        So, the best way to help yourself is to learn to stay relaxed while you’re taking your exam. If you have problems doing that, participate in a test anxiety workshop. There are a variety of those located at a variety of different settings. Furthermore, any good clinical or counseling psychologist can help you with that. Now the next variable that relates to factors that influence learning and memory relates to spaced practice being better than massed practice (or what is called cramming). This is shown on slide 39. In general, it’s better to spread out studying over a period of time instead of doing it all at once. Let’s give an example of that on slide 40. Basically studying three days for one hour is better than studying three hours all at once. That is, don’t cram for the exam. The question then becomes why? As we show in slide 41, the reason you have problems is because of the serial position curve. Generally you can only recall seven plus or minus two items in your memory, so when you’re cramming, basically what you’re doing is putting in information into your short term memory. Thus what you have is recalling of recency effect items. So in summary as we see here in the last few minutes is that there’s a variety of different factors that influence memory. Each of these factors is extremely important and ones that you should remember. In the next section, we’re going to begin to examine some early theories of memory and how those theories work.`
         setTranscription(t);
         console.log("transcription", transcription)
 
@@ -149,7 +198,7 @@ const CreateFilePage = () => {
           const summarizeResponse = await dispatch(summarizeFile({transcription: transcription, summary_type: s}));
 
           if (summarizeResponse.payload) {
-            setSummary(summarizeResponse.payload);
+            // setSummary(summarizeResponse.payload);
             setTitle(summarizeResponse.payload.Title);
             setVocabulary(summarizeResponse.payload.Vocabulary);
             setSummaryType(summarizeResponse.payload.Summary);
@@ -166,32 +215,33 @@ const CreateFilePage = () => {
 
   return (
     <Layout title='SimpleNotes | New File' content='Create File Page'>
-      <h1>Upload a new file</h1>
+      <h1>Summarize new file</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="formFile" className="form-label">max 100mb</label>
+          <label htmlFor="formFile" className="form-label">*mp4, m4a</label>
           <input className="form-control" type="file" accept='.m4a, .mp4' id="formFile" onChange={handleFileChange} />
         </div>
         <h3>PDF settings</h3>
         <h4>Font</h4>
         <div class="input-group mb-3">
-          <label class="input-group-text" for="inputGroupSelect01">Style</label>
-          <select class="form-select" id="inputGroupSelect01" onChange={handleFontChange} >
+          <label class="input-group-text" for="inputGroupSelect01">style</label>
+          <select class="form-select" id="inputGroupSelect01" defaultValue={"Times-Roman"}onChange={handleFontChange} >
             <option selected>Choose...</option>
-            <option value={"Times New Roman"}>Times New Roman</option>
-            <option value={"Sans-Serif"}>Sans-Serif</option>
+            <option value={"Times-Roman"}>Times New Roman</option>
+            <option value={"Courier"}>Courier</option>
             <option value={"Helvetica"}>Helvetica</option>
+            <option value={"OpenSans"}>Sans-Serif</option>
           </select>
         </div>
         <div className="input-group mb-3">
-          <span className="input-group-text" id="basic-addon1">Title</span>
+          <span className="input-group-text" id="basic-addon1">title</span>
           <input type='number' min={0} max={50} defaultValue={18} onChange={handleFontSizeTitleChange} className="form-control" placeholder="Title Font" aria-label="Title Font" aria-describedby="basic-addon1"></input>
-          <span className="input-group-text" id="basic-addon1">Body</span>
+          <span className="input-group-text" id="basic-addon1">body</span>
           <input type='number' min={0} max={50} defaultValue={12} onChange={handleFontSizeBodyChange} className="form-control" placeholder="Body Font" aria-label="Body Font" aria-describedby="basic-addon1"></input>
         </div>
         <h4>Spacing</h4>
         <div className="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">Line</label>
+        <label class="input-group-text" for="inputGroupSelect01">line</label>
           <select class="form-select" id="inputGroupSelect01" onChange={handleLineSpacingChange}>
             <option selected>Choose...</option>
             <option value="1.0">1.0</option>
@@ -201,7 +251,7 @@ const CreateFilePage = () => {
             <option value="2.5">2.5</option>
             <option value="3.0">3.0</option>
           </select>
-          <label class="input-group-text" for="inputGroupSelect01">Margin</label>
+          <label class="input-group-text" for="inputGroupSelect01">margin</label>
           <select class="form-select" id="inputGroupSelect01" onChange={handleMarginChange}>
             <option selected>Choose...</option>
             <option value="0.5">0.5</option>
@@ -212,40 +262,46 @@ const CreateFilePage = () => {
         </div>
         <h4>Color</h4>
         <div className="input-group mb-3">
-          <span className="input-group-text" id="basic-addon1">Background</span>
+          <span className="input-group-text" id="basic-addon1">background</span>
           <input type="color" class="form-control form-control-color" onChange={handleBackgroundColorChange} id="background-color-input" defaultValue="white" title="Choose your color"></input>
-          <span className="input-group-text" id="basic-addon1">Body</span>
+          <span className="input-group-text" id="basic-addon1">body</span>
           <input type="color" class="form-control form-control-color" onChange={handleBodyColorChange} id="body-color-input" defaultValue="black" title="Choose your color"></input>
         </div>
+        <div className="d-grid gap-2">
+          {(loading && transcribed == null) && 
+          <div class="d-flex align-items-center">
+            <strong class="text-primary" role="status">transcribing...</strong>
+            <div class="spinner-border ms-auto text-primary" aria-hidden="true"></div>
+          </div>}
+          {(loading && summarized == null) && 
+          <div class="d-flex align-items-center">
+            <strong class="text-primary" role="status">summarizing...</strong>
+            <div class="spinner-border ms-auto text-primary" aria-hidden="true"></div>
+          </div>}
+          {error && 
+          <div class="alert alert-danger" role="alert">
+            <div>
+              Error: {error}
+            </div>
+          </div>}
+          {(!loading && !summarized) && 
+          <button type="submit" className='btn btn-outline-primary'>Summarize</button>
+          }
+          {(!loading && summarized && transcribed) && 
         <div className="input-group mb-3">
-          <span className="input-group-text">New File Name</span>
-          <input type="text" className="form-control" aria-label="File Name" value={fileName} onChange={handleFileNameChange} />
-          <button type="submit" className='btn btn-outline-primary'>Create</button>
+          <span className="input-group-text">file name</span>
+          <input type="text" className="form-control" aria-label="file name" value={fileName} onChange={handleFileNameChange} />
+          <button type="button" className='btn btn-outline-primary' disabled={(!fileName&&pdfBlob)}>{downloadLink}</button>
+          <button onClick={handleUploadFile} type="button" className='btn btn-outline-primary' disabled={(!fileName&&pdfBlob)}>save to account</button>
+        </div>
+          }
         </div>
       </form>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-
       <h3>Preview</h3>
-      <PDFPreview
-        title = {title}
-        vocabulary = {vocabulary}
-        summary = {summaryType}
-        font={font}
-        fontSizeTitle={fontSizeTitle}
-        fontSizeBody={fontSizeBody}
-        lineSpacing={lineSpacing}
-        margin={margin}
-        backgroundColor={backgroundColor}
-        bodyColor={bodyColor}
-      />
-
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-      {/* {transcription && summary &&(
-      )} */}
-      
+      <PDFViewer style={{ width: '100%', height: '500px' }}>
+        {getDocument()}
+      </PDFViewer>
     </Layout>
   );
 };

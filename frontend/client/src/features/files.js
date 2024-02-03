@@ -119,6 +119,8 @@ const initialState = {
     files: [],
     loading: false,
     error: null,
+    transcribed: null,
+    summarized: null,
 };
 
 const filesSlice = createSlice({
@@ -150,23 +152,29 @@ const filesSlice = createSlice({
         })
         .addCase(transcribeFile.pending, state => {
             state.loading = true;
+            state.transcribed = null;
         })
         .addCase(transcribeFile.fulfilled, (state, action) => {
             state.loading = false;
+            state.transcribed = true;
         })
         .addCase(transcribeFile.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
+            state.transcribed = false;
         })
         .addCase(summarizeFile.pending, state => {
             state.loading = true;
+            state.summarized = null;
         })
         .addCase(summarizeFile.fulfilled, (state, action) => {
             state.loading = false;
+            state.summarized = true;
         })
         .addCase(summarizeFile.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
+            state.summarized = false;
         })
         .addCase(deleteFile.pending, state => {
             state.loading = true;
