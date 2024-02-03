@@ -128,16 +128,38 @@ const CreateFilePage = () => {
   };
 
   const handleUploadFile = async () => {
+    <BlobProvider document={getDocument()}>
+        {({ blob, url, loading, error }) => {
+          if (blob) {
+            setPdfBlob(blob);
+          }
+
+        }}
+      </BlobProvider>
     if (pdfBlob) {
-      const formData = new FormData();
-      formData.append('file', pdfBlob, `${fileName}.pdf`);
-      console.log('formData', formData);
-      // perform the upload
+        const formData = new FormData();
+        console.log('pdfBlob', pdfBlob);
+        console.log('fileName', fileName);
+        formData.append('file', new File([pdfBlob], `${fileName}.pdf`, {
+            type: 'application/pdf',
+        }));
+
+        // Dispatch the thunk action with formData
+        dispatch(uploadFile({ formData })).then((action) => {
+            if (uploadFile.fulfilled.match(action)) {
+                console.log('Upload successful', action.payload);
+                // Handle success
+            } else {
+                console.error('Upload failed', action.payload || action.error);
+                // Handle failure
+            }
+        });
+    } else {
+        console.log('PDF blob is not set');
     }
-    else {
-      console.log('pdfBlob is not set');
-    }
-  };
+};
+
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -267,6 +289,8 @@ const CreateFilePage = () => {
           <span className="input-group-text" id="basic-addon1">body</span>
           <input type="color" class="form-control form-control-color" onChange={handleBodyColorChange} id="body-color-input" defaultValue="black" title="Choose your color"></input>
         </div>
+        <button type="button" className='btn btn-outline-primary'>{downloadLink}</button>
+        <button onClick={handleUploadFile} type="button" className='btn btn-outline-primary'>save to account</button>
         <div className="d-grid gap-2">
           {(loading && transcribed == null) && 
           <div class="d-flex align-items-center">

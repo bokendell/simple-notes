@@ -23,32 +23,53 @@ export const getFiles = createAsyncThunk('files/', async (_, thunkAPI) => {
 
 export const uploadFile = createAsyncThunk(
     'files/create', 
-    async ({ name, s3_url }, thunkAPI) => {
-    try {
-        const body = JSON.stringify({
-			name,
-			s3_url,
-		});
-        const res = await fetch('/api/files/create/', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body,
-        });
-
-        const data = await res.json();
-
-        if (res.status === 200) {
-            return data;
-        } else {
-            return thunkAPI.rejectWithValue(data);
+    async ({ formData }, thunkAPI) => {
+        try {
+            const response = await fetch('/api/files/create/', { // Adjust the endpoint as necessary
+                method: 'POST',
+                body: formData, // Directly pass the FormData object
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                return thunkAPI.rejectWithValue(data);
+            }
+    
+            return data; // Assuming this is the file info from the server
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message || 'Could not upload file');
         }
-    } catch (err) {
-        return thunkAPI.rejectWithValue(err.response.data);
-    }
-});
+    });
+//     async ({ name, s3_url }, thunkAPI) => {
+//     try {
+//         const body = JSON.stringify({
+// 			name,
+// 			s3_url,
+// 		});
+//         const res = await fetch('/api/files/create/', {
+//             method: 'POST',
+//             headers: {
+//                 Accept: 'application/json',
+//                 'Content-Type': 'application/json',
+//             },
+//             body,
+//         });
+
+//         const data = await res.json();
+
+//         if (res.status === 200) {
+//             return data;
+//         } else {
+//             return thunkAPI.rejectWithValue(data);
+//         }
+//     } catch (err) {
+//         return thunkAPI.rejectWithValue(err.response.data);
+//     }
+// });
 
 export const deleteFile = createAsyncThunk('files/delete', async (id, thunkAPI) => {
     try {

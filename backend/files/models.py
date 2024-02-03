@@ -6,7 +6,6 @@ class File (models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     s3_url = models.URLField(max_length=200)
-    # pdf_file = models.FileField(upload_to='pdfs/', null=True, blank=True)
 
     def __str__(self):
         return self.name
