@@ -54,6 +54,28 @@ const getUser = createAsyncThunk('users/me', async (_, thunkAPI) => {
 	}
 });
 
+export const updateUser = createAsyncThunk(
+	'user/update',
+	async (userData, { rejectWithValue }) => {
+	  try {
+		// API call to update user
+		const response = await fetch('/api/user/update', {
+		  method: 'PUT',
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify(userData),
+		});
+		const data = await response.json();
+		if (!response.ok) throw new Error(data.message || 'Could not update user');
+		return data;
+	  } catch (error) {
+		return rejectWithValue(error.message || 'Could not update user');
+	  }
+	}
+  );
+  
+
 export const login = createAsyncThunk(
 	'users/login',
 	async ({ email, password }, thunkAPI) => {

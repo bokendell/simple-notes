@@ -15,6 +15,7 @@ const createFileRoute = require('./routes/files/createFile');
 const summarizeFileRoute = require('./routes/files/summarizeFile');
 const deleteFileRoute = require('./routes/files/deleteFile');
 const presignedUrlRoute = require('./routes/files/getURL');
+const updateRoute = require('./routes/auth/update');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(createFileRoute);
 app.use(summarizeFileRoute);
 app.use(deleteFileRoute);
 app.use(presignedUrlRoute);
+app.use(updateRoute);
 
 app.use(express.static('client/build'));
 app.get('*', (req, res) => {

@@ -160,8 +160,6 @@ const initialState = {
     files: [],
     loading: false,
     error: null,
-    transcribed: null,
-    summarized: null,
 };
 
 const filesSlice = createSlice({
@@ -182,23 +180,23 @@ const filesSlice = createSlice({
             state.error = action.error.message;
         })
         .addCase(uploadFile.pending, state => {
-            state.loading = true;
+            // state.uploading = true;
         })
         .addCase(uploadFile.fulfilled, (state, action) => {
-            state.loading = false;
+            // state.uploading = false;
         })
         .addCase(uploadFile.rejected, (state, action) => {
-            state.loading = false;
+            // state.uploading = false;
             state.error = action.error.message;
         })
         .addCase(getPresignedURL.pending, state => {
-            // state.loading = true;
+            state.loading = true;
         })
         .addCase(getPresignedURL.fulfilled, (state, action) => {
-            // state.loading = false;
+            state.loading = false;
         })
         .addCase(getPresignedURL.rejected, (state, action) => {
-            // state.loading = false;
+            state.loading = false;
             state.error = action.error.message;
         })
         .addCase(transcribeFile.pending, state => {

@@ -18,6 +18,7 @@ router.post('/api/files/summarize', async (req, res) => {
             messages: [{role: 'system', content: content}],
             model: "gpt-3.5-turbo-16k",
         });
+        console.log(completion.choices[0].message.content);
         console.log(JSON.parse(completion.choices[0].message.content));
 
         // Send a response with the generated summary
