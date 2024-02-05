@@ -10,21 +10,14 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const router = express.Router();
 
 router.post('/api/files/summarize', async (req, res) => {
-    const { transcription, summary_type } = req.body;
-	console.log("req.body", req.body);
-
+    console.log("Received request body:", req.body); // This will log the entire request body
+    const { transcription, intro } = req.body;
     try {
-        // Implement your summarization logic here using the received data
-        // For debugging purposes, you can log the received data
-        // console.log("Transcription:", transcription);
-        // console.log("Summary Type:", summary_type);
-
-        // Dummy response for testing
+        const content = intro + transcription;
         const completion = await openai.chat.completions.create({
-            messages: [{role: 'system', content: summary_type + transcription}],
+            messages: [{role: 'system', content: content}],
             model: "gpt-3.5-turbo-16k",
         });
-        console.log("res", completion.choices[0]);
         console.log(JSON.parse(completion.choices[0].message.content));
 
         // Send a response with the generated summary

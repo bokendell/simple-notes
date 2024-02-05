@@ -2,7 +2,7 @@ import Layout from 'components/Layout';
 
 const HomePage = () => {
     return (
-        <Layout title='SimpleNotes | Home' content='Home page for lecture transcription and summarization'>
+        <Layout title='SimpleNotes | home' content='Home page for lecture transcription and summarization'>
             <div className='container py-5'>
                 <h1 className='mb-5 text-center'>Welcome to SimpleNotes</h1>
                 <p className='lead text-center'>Follow these simple steps to get your lecture notes:</p>

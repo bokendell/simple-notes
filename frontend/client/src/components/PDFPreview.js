@@ -1,6 +1,6 @@
 import { Document, Page, Text, View, PDFViewer, StyleSheet, Font } from '@react-pdf/renderer';
 
-const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeBody, lineSpacing, margin, backgroundColor, bodyColor }) => {
+const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeSubHeading, fontSizeBody, lineSpacing, margin, backgroundColor, bodyColor }) => {
     // Register the font
     Font.register({
         family: 'OpenSans',
@@ -14,11 +14,11 @@ const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeB
         <Document>
             <Page size="A4">
                 <View style={{ flexDirection: 'column', alignItems: 'center', backgroundColor, margin: margin }}>
+                    {/* Title section */}
                     <Text style={{ fontSize: fontSizeTitle, marginBottom: 10, color: bodyColor, fontFamily: font }}>{title}</Text>
-                    
+                    {/* Vocabulary section */}
                     <View style={{ width: '80%', marginTop: 20 }}>
-                        <Text style={{ fontSize: (fontSizeBody + 4), marginBottom: 10, color: bodyColor }}>Terms</Text>
-                        {console.log(fontSizeBody)}
+                        <Text style={{ fontSize: fontSizeSubHeading, marginBottom: 10, color: bodyColor }}>Terms</Text>
                     </View>
                     {vocabulary.map((item, index) => (
                         <View key={index} style={{ width: '80%', marginBottom: 10 }}>
@@ -36,7 +36,7 @@ const PDFPreview = ({ title, vocabulary, summary, font, fontSizeTitle, fontSizeB
 
                     {/* Summary section */}
                     <View style={{ width: '80%', marginTop: 20 }}>
-                        <Text style={{ fontSize: (fontSizeBody + 4), marginBottom: 10, color: bodyColor, fontFamily: font }}>Summary</Text>
+                        <Text style={{ fontSize: fontSizeSubHeading, marginBottom: 10, color: bodyColor, fontFamily: font }}>Summary</Text>
                         {Object.keys(summary).map((key) => (
                         <Text key={key} style={{ fontSize: fontSizeBody, lineHeight: lineSpacing, color: bodyColor, marginLeft: 10, fontFamily: font}}>
                             - {summary[key]}

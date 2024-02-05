@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from .models import File
 from .serializers import FileSerializer
 from botocore.exceptions import ClientError, NoCredentialsError
+from botocore.client import Config
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
@@ -129,6 +130,8 @@ def generate_presigned_url(s3_key, expiration=3600):
     :return: Presigned URL as string. If error, returns None.
     """
     s3_client = boto3.client('s3',
+                             region_name=settings.AWS_S3_REGION_NAME,
+                             config=Config(signature_version='s3v4'),
                              aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                              aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     try:

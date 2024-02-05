@@ -10,22 +10,22 @@ const Navbar = () => {
 		<>
 			<li className='nav-item'>
 				<NavLink className='nav-link' to='/dashboard'>
-					Dashboard
+					dashboard
 				</NavLink>
 			</li>
 			<li className='nav-item'>
 				<NavLink className='nav-link' to='/files'>
-					My Files
+					my notes
 				</NavLink>
 			</li>
 			<li className='nav-item'>
 				<NavLink className='nav-link' to='/files/create'>
-					New File
+					new note
 				</NavLink>
 			</li>
 			<li className='nav-item'>
 				<a className='nav-link' href='#!' onClick={() => dispatch(logout())}>
-					Logout
+					logout
 				</a>
 			</li>
 		</>
@@ -35,12 +35,12 @@ const Navbar = () => {
 		<>
 			<li className='nav-item'>
 				<NavLink className='nav-link' to='/login'>
-					Login
+					login
 				</NavLink>
 			</li>
 			<li className='nav-item'>
 				<NavLink className='nav-link' to='/register'>
-					Register
+					register
 				</NavLink>
 			</li>
 		</>
@@ -67,7 +67,7 @@ const Navbar = () => {
 					<ul className='navbar-nav'>
 						<li className='nav-item'>
 							<NavLink className='nav-link' to='/'>
-								Home
+								home
 							</NavLink>
 						</li>
 						{isAuthenticated ? authLinks : guestLinks}

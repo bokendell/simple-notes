@@ -1,8 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { getFiles, deleteFile } from 'features/files';
+import { getFiles, deleteFile, getPresignedURL } from 'features/files';
 import { Navigate } from 'react-router-dom';
+import { Download } from 'react-feather';
 import Layout from 'components/Layout';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -12,6 +13,7 @@ const FilesPage = () => {
 	const dispatch = useDispatch();
 	const { files, loading, error } = useSelector(state => state.file);
 	const { isAuthenticated, user } = useSelector(state => state.user);
+	// const [ fileURLs, setFileURLs ] = useState({});
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [sortBy, setSortBy] = useState('');
 	const [sortOrder, setSortOrder] = useState('');
@@ -23,6 +25,9 @@ const FilesPage = () => {
 
 	useEffect(() => {
 		dispatch(getFiles());
+		// for (const file of files) {
+		// 	fileURLs[file.id] = dispatch(getPresignedURL(file.id));
+		// }
 	}, [dispatch]);
 
 
@@ -38,6 +43,27 @@ const FilesPage = () => {
 			setSelectedRows([...selectedRows, fileId]);
 		}
 	};
+
+	const handleDownloadClick = async (fileId) => {
+		try {
+			console.log('Getting URL for:', fileId);
+			// Assuming getPresignedURL is an async operation that fetches the URL
+			const actionResult = await dispatch(getPresignedURL(fileId));
+			// Assuming the URL is in the payload after the action is dispatched
+			const url = actionResult.payload.url; // Adjust according to how your data is structured
+			console.log('URL:', url);
+			if (url) {
+				// Use the fileId to download the file if URL is obtained
+				console.log('Downloading file:', fileId);
+				window.open(url, '_blank');
+			} else {
+				console.error('No URL returned for file:', fileId);
+			}
+		} catch (error) {
+			console.error('Error fetching URL:', error);
+		}
+	};
+	
 	
 	const handleDelete = () => {
 		// Logic to handle deletion of selected rows
@@ -80,14 +106,14 @@ const FilesPage = () => {
 	  
 	
 	return (
-		<Layout title='SimpleNotes | Files' content='Files page'>
+		<Layout title='SimpleNotes | notes' content='notes page'>
 			{loading || user === null ? (
 			<div className='spinner-border text-primary' role='status'>
 				<span className='visually-hidden'>Loading...</span>
 			</div>
 			) : (
 			<>
-				<h1 className='mb-5'>Files</h1>
+				<h1 className='mb-5'>notes</h1>
 				<div className="mb-3">
 				{selectedRows.length > 0 && (
 					<button onClick={handleDelete} className='btn btn-danger'>
@@ -101,27 +127,24 @@ const FilesPage = () => {
 					<tr>
 						<th scope='col'></th> {/* Toggle column */}
 						<th scope='col' onClick={() => handleSort('name')}>
-    						Name
+    						name
 							{sortBy === 'name' && (
 								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
 							)}
 						</th>
 						<th scope='col' onClick={() => handleSort('created_at')}>
-							Created
+							created
 							{sortBy === 'created_at' && (
 								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
 							)}
 						</th>
-						<th scope='col' onClick={() => handleSort('updated_at')}>Updated
+						<th scope='col' onClick={() => handleSort('updated_at')}>updated
 							{sortBy === 'updated_at' && (
 								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
 							)}
 						</th>
-						<th scope='col' onClick={() => handleSort('s3_key')}>
-    						URL
-							{sortBy === 's3_key' && (
-								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
-							)}
+						<th className='text-center' scope='col'>
+    						download
 						</th>
 					</tr>
 				</thead>
@@ -136,9 +159,16 @@ const FilesPage = () => {
 						/>
 						</td>
 						<td>{file.name}</td>
-						<td>{formatDate(file.created_at)}</td>
-						<td>{formatDate(file.updated_at)}</td>
-						<td>{file.s3_key}</td>
+						<td>{formatDate(file.created_at).toLowerCase()}</td>
+						<td>{formatDate(file.updated_at).toLowerCase()}</td>
+						<td className='text-center'>
+  							<button 
+    							className="btn btn-link p-0 border-0 d-inline-block" // Changed from d-flex to d-inline-block
+    							onClick={() => handleDownloadClick(file.id)}
+								style={{ color: 'black', width: '100%' }}>
+    							<Download />
+								</button>
+							</td>
 					</tr>
 					))}
 				</tbody>

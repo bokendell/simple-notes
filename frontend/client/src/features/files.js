@@ -127,14 +127,14 @@ export const transcribeFile = createAsyncThunk('files/transcribe', async (formDa
     }
   });
 
-export const summarizeFile = createAsyncThunk('files/summarize', async ({ transcription, summary_type }, thunkAPI) => {
+export const summarizeFile = createAsyncThunk('files/summarize', async ({ transcription, intro }, thunkAPI) => {
     try {
         const body = JSON.stringify({
 			transcription,
-			summary_type,
+			intro,
 		});
 
-        console.log("summary body", body);
+        // console.log("summary body", body);
         const res = await fetch('/api/files/summarize', {
             method: 'POST',
             headers: {
@@ -192,13 +192,13 @@ const filesSlice = createSlice({
             state.error = action.error.message;
         })
         .addCase(getPresignedURL.pending, state => {
-            state.loading = true;
+            // state.loading = true;
         })
         .addCase(getPresignedURL.fulfilled, (state, action) => {
-            state.loading = false;
+            // state.loading = false;
         })
         .addCase(getPresignedURL.rejected, (state, action) => {
-            state.loading = false;
+            // state.loading = false;
             state.error = action.error.message;
         })
         .addCase(transcribeFile.pending, state => {

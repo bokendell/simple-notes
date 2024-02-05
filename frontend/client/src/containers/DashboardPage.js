@@ -9,7 +9,7 @@ const DashboardPage = () => {
 		return <Navigate to='/login' />;
 
 	return (
-		<Layout title='SimpleNotes | Dashboard' content='Dashboard page'>
+		<Layout title='SimpleNotes | dashboard' content='Dashboard page'>
 			{loading || user === null ? (
 				<div className='spinner-border text-primary' role='status'>
 					<span className='visually-hidden'>Loading...</span>
