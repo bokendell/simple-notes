@@ -57,6 +57,8 @@ router.post('/api/files/transcribe', upload.single('file'), async (req, res) => 
                     console.error('Transcription error:', error);
                     res.status(500).json({ error: 'Transcription failed' });
                 });
+        //delete the file from the uploads folder
+        fs.unlinkSync(file.path);
     } catch (error) {
         console.error('Transcription error:', error);
         res.status(500).json({ error: 'Transcription failed' });
