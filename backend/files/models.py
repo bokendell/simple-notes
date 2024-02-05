@@ -5,7 +5,13 @@ class File (models.Model):
     user = models.ForeignKey('users.UserAccount', on_delete=models.CASCADE, null=True, blank=True, related_name='files') 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    s3_url = models.URLField(max_length=200)
+    s3_key = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ['name', 'user']
+
+        verbose_name = 'file'
+        verbose_name_plural = 'files'
 
     def __str__(self):
         return self.name

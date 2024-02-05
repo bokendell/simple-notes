@@ -14,6 +14,7 @@ const transcribeRoute = require('./routes/files/transcribeFile');
 const createFileRoute = require('./routes/files/createFile');
 const summarizeFileRoute = require('./routes/files/summarizeFile');
 const deleteFileRoute = require('./routes/files/deleteFile');
+const presignedUrlRoute = require('./routes/files/getURL');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(transcribeRoute);
 app.use(createFileRoute);
 app.use(summarizeFileRoute);
 app.use(deleteFileRoute);
+app.use(presignedUrlRoute);
 
 app.use(express.static('client/build'));
 app.get('*', (req, res) => {

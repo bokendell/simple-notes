@@ -289,6 +289,7 @@ const CreateFilePage = () => {
           <span className="input-group-text" id="basic-addon1">body</span>
           <input type="color" class="form-control form-control-color" onChange={handleBodyColorChange} id="body-color-input" defaultValue="black" title="Choose your color"></input>
         </div>
+        <input type="text" className="form-control" aria-label="file name" value={fileName} onChange={handleFileNameChange} />
         <button type="button" className='btn btn-outline-primary'>{downloadLink}</button>
         <button onClick={handleUploadFile} type="button" className='btn btn-outline-primary'>save to account</button>
         <div className="d-grid gap-2">

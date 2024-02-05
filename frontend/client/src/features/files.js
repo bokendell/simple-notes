@@ -21,6 +21,26 @@ export const getFiles = createAsyncThunk('files/', async (_, thunkAPI) => {
 	}
 });
 
+export const getPresignedURL = createAsyncThunk('files/presigned-url', async (id, thunkAPI) => {
+    try {
+        const res = await fetch(`/api/files/presigned-url/${id}`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+        const data = await res.json();
+
+        if (res.status === 200) {
+            return data;
+        } else {
+            return thunkAPI.rejectWithValue(data);
+        }
+    } catch (err) {
+        return thunkAPI.rejectWithValue(err.response.data);
+    }
+});
+
 export const uploadFile = createAsyncThunk(
     'files/create', 
     async ({ formData }, thunkAPI) => {
@@ -168,6 +188,16 @@ const filesSlice = createSlice({
             state.loading = false;
         })
         .addCase(uploadFile.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        })
+        .addCase(getPresignedURL.pending, state => {
+            state.loading = true;
+        })
+        .addCase(getPresignedURL.fulfilled, (state, action) => {
+            state.loading = false;
+        })
+        .addCase(getPresignedURL.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         })

@@ -117,9 +117,9 @@ const FilesPage = () => {
 								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
 							)}
 						</th>
-						<th scope='col' onClick={() => handleSort('s3_url')}>
+						<th scope='col' onClick={() => handleSort('s3_key')}>
     						URL
-							{sortBy === 's3_url' && (
+							{sortBy === 's3_key' && (
 								<i className={`fa ${sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} aria-hidden='true'></i>
 							)}
 						</th>
@@ -138,7 +138,7 @@ const FilesPage = () => {
 						<td>{file.name}</td>
 						<td>{formatDate(file.created_at)}</td>
 						<td>{formatDate(file.updated_at)}</td>
-						<td>{file.s3_url}</td>
+						<td>{file.s3_key}</td>
 					</tr>
 					))}
 				</tbody>
