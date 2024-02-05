@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -16,6 +17,11 @@ const summarizeFileRoute = require('./routes/files/summarizeFile');
 const deleteFileRoute = require('./routes/files/deleteFile');
 const presignedUrlRoute = require('./routes/files/getURL');
 const updateRoute = require('./routes/auth/update');
+
+const corsOptions = {
+	origin: 'simple-notes-frontend-dev.us-east-2.elasticbeanstalk.com', // This should match the domain of your React frontend
+	credentials: true, // This is important for cookies to be sent
+  };
 
 const app = express();
 
@@ -35,6 +41,7 @@ app.use(summarizeFileRoute);
 app.use(deleteFileRoute);
 app.use(presignedUrlRoute);
 app.use(updateRoute);
+app.use(cors(corsOptions));
 
 app.use(express.static('client/build'));
 app.get('*', (req, res) => {
