@@ -27,6 +27,7 @@ const app = express();
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 app.use(loginRoute);
@@ -41,8 +42,9 @@ app.use(summarizeFileRoute);
 app.use(deleteFileRoute);
 app.use(presignedUrlRoute);
 app.use(updateRoute);
-app.use(cors(corsOptions));
-app.use(app.use(express.static(path.join(__dirname, 'client/build'))));
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+
 
 
 app.use(express.static('client/build'));
