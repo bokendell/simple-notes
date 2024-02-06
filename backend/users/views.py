@@ -53,7 +53,14 @@ class UpdateUserView(APIView):
 class LoggingTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         logger.info(f"TokenObtainPairView called with user: {request.user}")
-        return super().post(request, *args, **kwargs)
+        try:
+            response = super().post(request, *args, **kwargs)
+            logger.info("Token successfully obtained.")
+            return response
+        except Exception as e:
+            logger.error(f"Error obtaining token: {e}", exc_info=True)
+            raise
+        # return super().post(request, *args, **kwargs)
 
 # Repeat for other views as needed
 class LoggingTokenRefreshView(TokenRefreshView):
