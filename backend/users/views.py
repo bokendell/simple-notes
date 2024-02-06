@@ -5,7 +5,7 @@ from .serializers import UserCreateSerializer, UserSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('users.views')
 
 class RegisterView(APIView):
   def post(self, request):

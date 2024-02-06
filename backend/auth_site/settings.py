@@ -41,17 +41,25 @@ ALLOWED_HOSTS = ['*', 'http://simple-notes-backend-dev.us-east-2.elasticbeanstal
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
-        'django': {
+        # Targeting specifically the app and module
+        'users.views': {
             'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
+            'level': 'INFO',
+            'propagate': False,  # Prevents the handled log records from being propagated to the root logger
         },
     },
 }
