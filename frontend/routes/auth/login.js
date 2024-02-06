@@ -9,7 +9,7 @@ router.post('/api/users/login', async (req, res) => {
 	const { email, password } = req.body;
 
 	const body = JSON.stringify({ email, password });
-
+	console.log(body);
 	try {
 		const apiRes = await fetch(`${process.env.API_URL}/api/token/`, {
 			method: 'POST',
@@ -19,9 +19,8 @@ router.post('/api/users/login', async (req, res) => {
 			},
 			body,
 		});
-
+		console.log(apiRes);
 		const data = await apiRes.json();
-
 		if (apiRes.status === 200) {
 			res.setHeader('Set-Cookie', [
 				cookie.serialize('access', data.access, {
@@ -45,6 +44,7 @@ router.post('/api/users/login', async (req, res) => {
 			return res.status(apiRes.status).json(data);
 		}
 	} catch (err) {
+		console.error(err);
 		return res.status(500).json({
 			error: 'Something went wrong when logging in',
 		});
