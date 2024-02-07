@@ -3,9 +3,14 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from .serializers import UserCreateSerializer, UserSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from django.http import HttpResponse
 import logging
 
 logger = logging.getLogger('users.views')
+
+def blank_page(request):
+    return HttpResponse("This is a blank page.", content_type="text/plain")
+
 
 class RegisterView(APIView):
   def post(self, request):

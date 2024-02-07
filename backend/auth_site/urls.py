@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 # from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from users.views import LoggingTokenObtainPairView, LoggingTokenRefreshView, LoggingTokenVerifyView
+from users.views import LoggingTokenObtainPairView, LoggingTokenRefreshView, LoggingTokenVerifyView, blank_page
 
 urlpatterns = [
     path('api/token/', LoggingTokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -25,4 +25,5 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('admin/', admin.site.urls),
     path('api/files/', include('files.urls')),
+    path('', blank_page, name='blank_page'),
 ]
