@@ -55,10 +55,10 @@ const CreateFilePage = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    const maxAllowedSize = 70 * 1024 * 1024; // 70 MB
+    const maxAllowedSize = 50 * 1024 * 1024; // 70 MB
 
     if (file && file.size > maxAllowedSize) {
-      alert('File is too large. Please keep audio to under an hour (70mb limit)');
+      alert('File is too large. Please keep audio to under an hour (50mb limit)');
       e.target.value = '';
       return;
     }
