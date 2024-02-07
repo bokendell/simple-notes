@@ -44,7 +44,6 @@ router.post('/api/users/login', async (req, res) => {
 			return res.status(apiRes.status).json(data);
 		}
 	} catch (err) {
-		console.error(err);
 		return res.status(500).json({
 			error: 'Something went wrong when logging in',
 		});
