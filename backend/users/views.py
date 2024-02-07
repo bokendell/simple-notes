@@ -31,6 +31,8 @@ class RetrieveUserView(APIView):
   permission_classes = [permissions.IsAuthenticated]
 
   def get(self, request):
+    auth_header = request.headers.get('Authorization', 'No Authorization header')
+    logger.info(f"Authorization Header: {auth_header}")
     user = request.user
     user = UserSerializer(user)
 
