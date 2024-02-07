@@ -56,6 +56,7 @@ class LoggingTokenObtainPairView(TokenObtainPairView):
         try:
             response = super().post(request, *args, **kwargs)
             logger.info("Token successfully obtained.")
+            logging.info(response.data)
             return response
         except Exception as e:
             logger.error(f"Error obtaining token: {e}", exc_info=True)
@@ -66,9 +67,25 @@ class LoggingTokenObtainPairView(TokenObtainPairView):
 class LoggingTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         logger.info("TokenRefreshView called")
+        try:
+            response = super().post(request, *args, **kwargs)
+            logger.info("Token successfully obtained.")
+            logging.info(response.data)
+            return response
+        except Exception as e:
+            logger.error(f"Error obtaining token: {e}", exc_info=True)
+            raise
         return super().post(request, *args, **kwargs)
 
 class LoggingTokenVerifyView(TokenVerifyView):
     def post(self, request, *args, **kwargs):
         logger.info("TokenVerifyView called")
+        try:
+            response = super().post(request, *args, **kwargs)
+            logger.info("Token successfully obtained.")
+            logging.info(response.data)
+            return response
+        except Exception as e:
+            logger.error(f"Error obtaining token: {e}", exc_info=True)
+            raise
         return super().post(request, *args, **kwargs)
