@@ -30,12 +30,12 @@ const RegisterPage = () => {
 	if (registered) return <Navigate to='/login' />;
 
 	return (
-		<Layout title='SimpleNotes | Register' content='Register page'>
-			<h1>Register for an Account</h1>
+		<Layout title='SimpleNotes | register' content='Register page'>
+			<h1>register for an account</h1>
 			<form className='mt-5' onSubmit={onSubmit}>
 				<div className='form-group'>
 					<label className='form-label' htmlFor='first_name'>
-						First Name
+						first name
 					</label>
 					<input
 						className='form-control'
@@ -48,7 +48,7 @@ const RegisterPage = () => {
 				</div>
 				<div className='form-group mt-3'>
 					<label className='form-label' htmlFor='last_name'>
-						Last Name
+						last name
 					</label>
 					<input
 						className='form-control'
@@ -61,7 +61,7 @@ const RegisterPage = () => {
 				</div>
 				<div className='form-group mt-3'>
 					<label className='form-label' htmlFor='email'>
-						Email
+						email
 					</label>
 					<input
 						className='form-control'
@@ -90,7 +90,7 @@ const RegisterPage = () => {
 						<span className='visually-hidden'>Loading...</span>
 					</div>
 				) : (
-					<button className='btn btn-primary mt-4'>Register</button>
+					<button className='btn btn-primary mt-4'>register</button>
 				)}
 			</form>
 		</Layout>

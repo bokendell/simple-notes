@@ -34,12 +34,12 @@ const LoginPage = () => {
 	if (isAuthenticated) return <Navigate to='/dashboard' />;
 
 	return (
-		<Layout title='SimpleNotes | Login' content='Login page'>
-			<h1>Log into your Account</h1>
+		<Layout title='SimpleNotes | login' content='Login page'>
+			<h1>log into your account</h1>
 			<form className='mt-5' onSubmit={onSubmit}>
 				<div className='form-group'>
 					<label className='form-label' htmlFor='email'>
-						Email
+						email
 					</label>
 					<input
 						className='form-control'
@@ -52,7 +52,7 @@ const LoginPage = () => {
 				</div>
 				<div className='form-group mt-3'>
 					<label className='form-label' htmlFor='password'>
-						Password
+						password
 					</label>
 					<input
 						className='form-control'
