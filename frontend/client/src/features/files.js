@@ -114,15 +114,17 @@ export const transcribeFile = createAsyncThunk('files/transcribe', async (formDa
         method: 'POST',
         body: formData, // formData directly as body
       });
-  
+      console.log(res);
       const data = await res.json();
   
       if (res.status === 200) {
         return data;
       } else {
+        console.log(data);
         return thunkAPI.rejectWithValue(data);
       }
     } catch (err) {
+        console.log(err);
       return thunkAPI.rejectWithValue(err.response.data);
     }
   });
