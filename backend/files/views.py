@@ -18,7 +18,8 @@ import logging
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getFilesList(request):
-    notes = File.objects.all().order_by('-updated_at')
+    user = request.user
+    notes = File.objects.filter(user=user).order_by('-updated_at')
     serializer = FileSerializer(notes, many=True)
     return Response(serializer.data)
 
