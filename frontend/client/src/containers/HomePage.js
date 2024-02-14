@@ -1,8 +1,4 @@
 import Layout from 'components/Layout';
-import uploadStepVid from './assets/lecture-upload-vid.mp4';
-import transcribeSummaryStepVid from './assets/transcribe-summary-step.mp4';
-import savingStepVid from './assets/saving-step.mp4';
-import manageStepVid from './assets/manage-step.mp4';
 
 const HomePage = () => {
     return (
@@ -17,7 +13,7 @@ const HomePage = () => {
                                 <h2 className='h4 card-title'>upload</h2>
                                 <p className='card-text'>upload the audio file of your lecture</p>
                                 <video autoPlay loop muted playsinline className='img-fluid'>
-                                    <source src={uploadStepVid} type='video/mp4'/>
+                                    <source src="https://simplenotes-vids.s3.us-east-2.amazonaws.com/upload.mp4" type='video/mp4'/>
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
@@ -31,7 +27,7 @@ const HomePage = () => {
                                 <h2 className='h4 card-title'>transcribe & summarize</h2>
                                 <p className='card-text'>transcribe and summarize your lecture audio (around 20-30s)</p>
                                 <video autoPlay loop muted playsinline className='img-fluid'>
-                                    <source src={transcribeSummaryStepVid} type='video/mp4'/>
+                                    <source src="https://simplenotes-vids.s3.us-east-2.amazonaws.com/transcribe-summarize.mp4" type='video/mp4'/>
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
@@ -45,7 +41,7 @@ const HomePage = () => {
                                 <h2 className='h4 card-title'>save</h2>
                                 <p className='card-text'>save the notes to your account or directly to your device using our PDF viewer</p>
                                 <video autoPlay loop muted playsinline className='img-fluid'>
-                                    <source src={savingStepVid} type='video/mp4'/>
+                                    <source src="https://simplenotes-vids.s3.us-east-2.amazonaws.com/saving.mp4" type='video/mp4'/>
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
@@ -59,7 +55,7 @@ const HomePage = () => {
                                 <h2 className='h4 card-title'>manage</h2>
                                 <p className='card-text'>manage all your account's notes</p>
                                 <video autoPlay loop muted playsinline className='img-fluid'>
-                                    <source src={manageStepVid} type='video/mp4'/>
+                                    <source src="https://simplenotes-vids.s3.us-east-2.amazonaws.com/manage.mp4" type='video/mp4'/>
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
