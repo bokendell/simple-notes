@@ -30,7 +30,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*', 'http://simple-notes-backend-dev.us-east-2.elasticbeanstalk.com', "http://simple-notes-frontend-dev.us-east-2.elasticbeanstalk.com", 'simple-notes-backend-dev.us-east-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['*', 'https://simple-notes-backend-dev.us-east-2.elasticbeanstalk.com', "https://simple-notes-frontend-dev.us-east-2.elasticbeanstalk.com", 'simple-notes-backend-dev.us-east-2.elasticbeanstalk.com']
 # Assuming your second machine has an IP address of 192.168.1.5
 # ALLOWED_HOSTS = ['136.38.137.165', 'localhost', '127.0.0.1', '*']
 
@@ -94,7 +94,7 @@ ROOT_URLCONF = 'auth_site.urls'
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://simple-notes-frontend-dev.us-east-2.elasticbeanstalk.com",
+    "https://simple-notes-frontend-dev.us-east-2.elasticbeanstalk.com",
 ]
 
 CORS_ALLOW_METHODS = [
