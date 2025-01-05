@@ -1,0 +1,51 @@
+name: simplenotes
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    volumes:
+      - simplenotes_postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./.env
+    networks:
+      - simplenotes-network
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/auth_site/.env
+    depends_on:
+      - db
+    networks:
+      - simplenotes-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend
+    networks:
+      - simplenotes-network
+
+volumes:
+  simplenotes_postgres_data:
+
+networks:
+  simplenotes-network:
+    driver: bridge
