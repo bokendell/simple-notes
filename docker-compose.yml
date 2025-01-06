@@ -4,8 +4,9 @@ services:
   db:
     image: postgres:16
     restart: unless-stopped
+    container_name: db
     volumes:
-      - simplenotes_postgres_data:/var/lib/postgresql/data/
+      - simplenotes-db_data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
     env_file:
@@ -13,11 +14,12 @@ services:
     networks:
       - simplenotes-network
 
-  app:
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     restart: always
+    container_name: backend
     volumes:
       - ./backend:/app
     ports:
@@ -33,6 +35,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: frontend
     restart: always
     ports:
       - "4000:4000"
@@ -44,7 +47,7 @@ services:
       - simplenotes-network
 
 volumes:
-  simplenotes_postgres_data:
+  simplenotes-db_data:
 
 networks:
   simplenotes-network:
