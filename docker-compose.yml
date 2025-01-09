@@ -2,13 +2,13 @@ name: simplenotes
 
 services:
   db:
-    image: postgres:16
+    image: mysql:9
     restart: unless-stopped
     container_name: db
     volumes:
-      - simplenotes-db_data:/var/lib/postgresql/data/
+      - db_data:/var/lib/mysql/
     ports:
-      - "5432:5432"
+      - "3306:3306"
     env_file:
       - ./.env
     networks:
@@ -47,7 +47,7 @@ services:
       - simplenotes-network
 
 volumes:
-  simplenotes-db_data:
+  db_data:
 
 networks:
   simplenotes-network:

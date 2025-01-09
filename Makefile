@@ -34,10 +34,10 @@ up:
 	@if [ -n "$(filter-out $@,$(MAKECMDGOALS))" ]; then \
 		CONTAINER="$(filter-out $@,$(MAKECMDGOALS))"; \
 		echo "$(INFO_COLOR)Starting $$CONTAINER in detached mode...$(NO_COLOR)"; \
-		docker compose up $$CONTAINER; \
+		docker compose up -d $$CONTAINER; \
 	else \
 		echo "$(INFO_COLOR)Starting all services in detached mode...$(NO_COLOR)"; \
-		docker-compose up; \
+		docker-compose up -d; \
 	fi
 	echo "$(SUCCESS_COLOR)Services started successfully.$(NO_COLOR)";
 
