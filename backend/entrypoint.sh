@@ -10,12 +10,12 @@ echo_info() {
 
 run_migrations() {
     echo_info "Running migrations..."
-    python manage.py migrate
+    uv run manage.py migrate
 }
 
 collect_static_files() {
     echo_info "Collecting static files..."
-    python manage.py collectstatic --noinput
+    uv run manage.py collectstatic --noinput
 }
 
 start_dev_server() {
@@ -24,7 +24,7 @@ start_dev_server() {
     collect_static_files
 
     echo_info "Starting Django development server..."
-    exec python manage.py runserver 0.0.0.0:8000
+    exec uv run manage.py runserver 0.0.0.0:8000
 }
 
 start_prod_server() {
@@ -33,9 +33,8 @@ start_prod_server() {
     collect_static_files
 
     echo_info "Starting Gunicorn server..."
-    exec gunicorn auth_site.wsgi:application --bind 0.0.0.0:8000
+    exec uv run -m gunicorn auth_site.wsgi:application --bind 0.0.0.0:8000
 }
-
 
 echo_info "Starting entrypoint script..."
 

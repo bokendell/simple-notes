@@ -1,12 +1,5 @@
 # Use an official Python runtime as the base image
-FROM python:3.8-slim
-
-# Set environment variables to prevent Python from writing pyc files and buffering stdout/stderr
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Set work directory
-WORKDIR /app
+FROM python:3.12-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -15,13 +8,20 @@ RUN apt-get update && apt-get install -y \
     bash \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt /app/
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Set environment variables to prevent Python from writing pyc files and buffering stdout/stderr
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Copy the entrypoint script
-COPY entrypoint.sh /app/
+# Set work directory
+WORKDIR /app
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir --upgrade uv
+
+COPY pyproject.toml /app/
+RUN uv lock || true
+RUN uv sync
 
 # Copy the Django project
 COPY . /app/
@@ -33,4 +33,4 @@ RUN chmod +x /app/entrypoint.sh
 EXPOSE 8000
 
 # Define the entrypoint
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
