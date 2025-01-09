@@ -31,8 +31,8 @@ WORKDIR /app
 # Copy server package files
 COPY package.json yarn.lock ./
 
-# Install server dependencies (only production)
-RUN yarn install --production
+# Install server dependencies
+RUN yarn install
 
 # Remove build dependencies to keep the image lightweight
 RUN apk del python3 make g++
@@ -43,8 +43,14 @@ COPY --from=build /app/client/build ./client/build
 # Copy the rest of the server code
 COPY . ./
 
-# Expose port 4000 for the server
-EXPOSE 4000
+# Copy entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
 
-# Start the Express server
-CMD ["yarn", "start"]
+# Make the entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
+
+# Expose necessary ports
+EXPOSE 4000 3000
+
+# Use the entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"]
