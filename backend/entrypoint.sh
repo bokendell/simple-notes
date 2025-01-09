@@ -33,7 +33,7 @@ start_prod_server() {
     collect_static_files
 
     echo_info "Starting Gunicorn server..."
-    exec gunicorn your_project.wsgi:application --bind 0.0.0.0:8000
+    exec gunicorn authsite.wsgi:application --bind 0.0.0.0:8000
 }
 
 
