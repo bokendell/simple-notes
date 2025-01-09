@@ -25,7 +25,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - ./backend/auth_site/.env
+      - ./backend/.env
     depends_on:
       - db
     networks:
