@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     bash \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Set environment variables to prevent Python from writing pyc files and buffering stdout/stderr

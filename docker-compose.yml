@@ -1,54 +1,85 @@
-name: simplenotes
+name: "${PROJECT_NAME}"
 
 services:
-  db:
-    image: mysql:9
-    restart: unless-stopped
-    container_name: db
-    volumes:
-      - db_data:/var/lib/mysql/
-    ports:
-      - "3306:3306"
-    env_file:
-      - ./.env
-    networks:
-      - simplenotes-network
+    db:
+        build:
+            context: ./docker/db
+            dockerfile: Dockerfile
+        image: "${PROJECT_NAME}-${DB_CONTAINER_NAME}"
+        container_name: "${PROJECT_NAME}-${DB_CONTAINER_NAME}"
+        env_file:
+            - .env
+        ports:
+            - "3306:3306"
+        volumes:
+            - db_data:/var/lib/mysql/
+        restart: unless-stopped
+        networks:
+            - app_network
+        healthcheck:
+            test: ["CMD-SHELL", "mysqladmin ping -h localhost --silent"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 20s
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    restart: always
-    container_name: backend
-    volumes:
-      - ./backend:/app
-    ports:
-      - "8000:8000"
-    env_file:
-      - ./backend/.env
-    depends_on:
-      - db
-    networks:
-      - simplenotes-network
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        container_name: "${PROJECT_NAME}-${BACKEND_CONTAINER_NAME}"
+        image: "${PROJECT_NAME}-${BACKEND_CONTAINER_NAME}"
+        env_file:
+            - ./backend/.env
+        depends_on:
+            db:
+                condition: service_healthy
+        volumes:
+            - ./backend:/app
+        ports:
+            - "8000:8000"
+        restart: unless-stopped
+        networks:
+            - app_network
+        healthcheck:
+            test:
+                ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 10s
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: frontend
-    restart: always
-    ports:
-      - "4000:4000"
-    env_file:
-      - ./frontend/.env
-    depends_on:
-      - backend
-    networks:
-      - simplenotes-network
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        container_name: "${PROJECT_NAME}-${FRONTEND_CONTAINER_NAME}"
+        image: "${PROJECT_NAME}-${FRONTEND_CONTAINER_NAME}"
+        env_file:
+            - ./frontend/.env
+        depends_on:
+            backend:
+                condition: service_healthy
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+        ports:
+            - "4000:4000"
+        restart: unless-stopped
+        networks:
+            - app_network
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 10s
 
 volumes:
-  db_data:
+    db_data:
+        name: "${PROJECT_NAME}-${DB_CONTAINER_NAME}-data"
 
 networks:
-  simplenotes-network:
-    driver: bridge
+    app_network:
+        name: "${PROJECT_NAME}-network"
+        driver: bridge
