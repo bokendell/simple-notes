@@ -29,7 +29,7 @@ environ.Env.read_env()
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True if env('APP_ENV') == 'development' else False
 
 ALLOWED_HOSTS = ['*', 'https://simple-notes-backend-dev.us-east-2.elasticbeanstalk.com', "https://simple-notes-frontend-dev.us-east-2.elasticbeanstalk.com", 'simple-notes-backend-dev.us-east-2.elasticbeanstalk.com']
 # Assuming your second machine has an IP address of 192.168.1.5
@@ -144,7 +144,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': env('DB_NAME'),
-        'USER': env('DB_USERNAME'),
+        'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWORD'),
         'HOST': env('DB_HOST'), 
         'PORT': env('DB_PORT'),

@@ -10,7 +10,7 @@ services:
         env_file:
             - .env
         ports:
-            - "3306:3306"
+            - "${LOCAL_DB_PORT}:3306"
         volumes:
             - db_data:/var/lib/mysql/
         restart: unless-stopped
@@ -27,23 +27,25 @@ services:
         build:
             context: ./backend
             dockerfile: Dockerfile
+            args:
+                - DOCKER_BACKEND_PORT=${DOCKER_BACKEND_PORT}
         container_name: "${PROJECT_NAME}-${BACKEND_CONTAINER_NAME}"
         image: "${PROJECT_NAME}-${BACKEND_CONTAINER_NAME}"
         env_file:
             - ./backend/.env
+            - .env
         depends_on:
             db:
                 condition: service_healthy
         volumes:
             - ./backend:/app
         ports:
-            - "8000:8000"
+            - "${LOCAL_BACKEND_PORT}:${DOCKER_BACKEND_PORT}"
         restart: unless-stopped
         networks:
             - app_network
         healthcheck:
-            test:
-                ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+            test: ["CMD-SHELL", "curl -f ${BACKEND_HEALTH_CHECK_URL} || exit 1"]
             interval: 5s
             timeout: 5s
             retries: 10
@@ -52,11 +54,14 @@ services:
     frontend:
         build:
             context: ./frontend
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.dev
+            args:
+                - DOCKER_FRONTEND_PORT=${DOCKER_FRONTEND_PORT}
         container_name: "${PROJECT_NAME}-${FRONTEND_CONTAINER_NAME}"
         image: "${PROJECT_NAME}-${FRONTEND_CONTAINER_NAME}"
         env_file:
             - ./frontend/.env
+            - .env
         depends_on:
             backend:
                 condition: service_healthy
@@ -64,12 +69,14 @@ services:
             - ./frontend:/app
             - /app/node_modules
         ports:
-            - "4000:4000"
+            - "${LOCAL_FRONTEND_PORT}:${DOCKER_FRONTEND_PORT}"
+            - "3000:3000"
         restart: unless-stopped
         networks:
             - app_network
         healthcheck:
-            test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+            test:
+                ["CMD-SHELL", "curl -f ${FRONTEND_HEALTH_CHECK_URL} || exit 1"]
             interval: 5s
             timeout: 5s
             retries: 10

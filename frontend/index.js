@@ -1,32 +1,32 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const path = require('path');
-const cors = require('cors');
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const path = require("path");
+const cors = require("cors");
 
-require('dotenv').config();
+require("dotenv").config();
 
-const loginRoute = require('./routes/auth/login');
-const logoutRoute = require('./routes/auth/logout');
-const meRoute = require('./routes/auth/me');
-const registerRoute = require('./routes/auth/register');
-const verifyRoute = require('./routes/auth/verify');
-const filesRoute = require('./routes/files/files');
-const transcribeRoute = require('./routes/files/transcribeFile');
-const createFileRoute = require('./routes/files/createFile');
-const summarizeFileRoute = require('./routes/files/summarizeFile');
-const deleteFileRoute = require('./routes/files/deleteFile');
-const presignedUrlRoute = require('./routes/files/getURL');
-const updateRoute = require('./routes/auth/update');
+const loginRoute = require("./routes/auth/login");
+const logoutRoute = require("./routes/auth/logout");
+const meRoute = require("./routes/auth/me");
+const registerRoute = require("./routes/auth/register");
+const verifyRoute = require("./routes/auth/verify");
+const filesRoute = require("./routes/files/files");
+const transcribeRoute = require("./routes/files/transcribeFile");
+const createFileRoute = require("./routes/files/createFile");
+const summarizeFileRoute = require("./routes/files/summarizeFile");
+const deleteFileRoute = require("./routes/files/deleteFile");
+const presignedUrlRoute = require("./routes/files/getURL");
+const updateRoute = require("./routes/auth/update");
 
 const corsOptions = {
-	origin: 'simple-notes-frontend-dev.us-east-2.elasticbeanstalk.com', // This should match the domain of your React frontend
-	credentials: true, // This is important for cookies to be sent
-  };
+	origin: "127.0.0.1",
+	credentials: true,
+};
 
 const app = express();
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
@@ -43,15 +43,16 @@ app.use(deleteFileRoute);
 app.use(presignedUrlRoute);
 app.use(updateRoute);
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, "client/build")));
 
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "client/build")));
 
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+	});
+}
 
-app.use(express.static('client/build'));
-app.get('*', (req, res) => {
-	return res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-});
-
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.DOCKER_FRONTEND_PORT || 4000;
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

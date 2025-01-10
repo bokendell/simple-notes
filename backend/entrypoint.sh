@@ -24,7 +24,7 @@ start_dev_server() {
     collect_static_files
 
     echo_info "Starting Django development server..."
-    exec uv run manage.py runserver 0.0.0.0:8000
+    exec uv run manage.py runserver 0.0.0.0:${DOCKER_BACKEND_PORT}
 }
 
 start_prod_server() {
@@ -33,7 +33,7 @@ start_prod_server() {
     collect_static_files
 
     echo_info "Starting Gunicorn server..."
-    exec uv run -m gunicorn auth_site.wsgi:application --bind 0.0.0.0:8000
+    exec uv run -m gunicorn auth_site.wsgi:application --bind 0.0.0.0:${DOCKER_BACKEND_PORT}
 }
 
 echo_info "Starting entrypoint script..."

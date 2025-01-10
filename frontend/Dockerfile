@@ -1,6 +1,10 @@
 # Stage 1: Build the React application
 FROM node:20-alpine AS build
 
+ARG DOCKER_FRONTEND_PORT=4000
+ENV DOCKER_FRONTEND_PORT=${DOCKER_FRONTEND_PORT}
+
+
 # Install build dependencies
 RUN apk add --no-cache python3 make g++
 
@@ -50,7 +54,7 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 # Expose necessary ports
-EXPOSE 4000 3000
+EXPOSE ${DOCKER_FRONTEND_PORT}
 
 # Use the entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]

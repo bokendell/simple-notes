@@ -4,7 +4,7 @@ module.exports = function (app) {
 	app.use(
 		'/api',
 		createProxyMiddleware({
-			target: 'http://127.0.0.1:4000',
+			target: `http://127.0.0.1:${process.env.DOCKER_FRONTEND_PORT}`,
 			changeOrigin: true,
 		})
 	);
