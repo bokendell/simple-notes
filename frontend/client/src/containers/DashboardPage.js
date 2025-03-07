@@ -1,11 +1,12 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { Navigate } from 'react-router-dom';
-import Layout from 'components/Layout';
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+import Layout from "components/Layout";
 // import updateUser from 'features/user';
 
 const DashboardPage = () => {
-	const dispatch = useDispatch();
-	const { isAuthenticated, user, loading } = useSelector(state => state.user);
+	const { isAuthenticated, user, loading } = useSelector(
+		(state) => state.user
+	);
 
 	// const handleAddTranscription = () => {
 	// 	const transcriptions_left = user.transcriptions_left + 1;
@@ -20,17 +21,17 @@ const DashboardPage = () => {
 	// };
 
 	if (!isAuthenticated && !loading && user === null)
-		return <Navigate to='/login' />;
+		return <Navigate to="/login" />;
 
 	return (
-		<Layout title='SimpleNotes | dashboard' content='Dashboard page'>
+		<Layout title="SimpleNotes | dashboard" content="Dashboard page">
 			{loading || user === null ? (
-				<div className='spinner-border text-primary' role='status'>
-					<span className='visually-hidden'>Loading...</span>
+				<div className="spinner-border text-primary" role="status">
+					<span className="visually-hidden">Loading...</span>
 				</div>
 			) : (
 				<>
-					<h1 className='mb-5'>dashboard</h1>
+					<h1 className="mb-5">dashboard</h1>
 					<p>user details</p>
 					<ul>
 						<li>first name: {user.first_name}</li>

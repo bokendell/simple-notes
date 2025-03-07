@@ -53,6 +53,6 @@ if (process.env.NODE_ENV === "production") {
 	});
 }
 
-const PORT = process.env.DOCKER_FRONTEND_PORT || 4000;
+const PORT = process.env.DOCKER_FRONTEND_PORT;
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

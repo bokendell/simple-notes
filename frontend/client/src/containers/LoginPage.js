@@ -1,74 +1,74 @@
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Navigate } from 'react-router-dom';
-import { resetRegistered, login } from 'features/user';
-import Layout from 'components/Layout';
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Navigate } from "react-router-dom";
+import { resetRegistered, login } from "features/user";
+import Layout from "components/Layout";
 
 const LoginPage = () => {
 	const dispatch = useDispatch();
 	const { loading, isAuthenticated, registered } = useSelector(
-		state => state.user
+		(state) => state.user
 	);
 
 	const [formData, setFormData] = useState({
-		email: '',
-		password: '',
+		email: "",
+		password: "",
 	});
 
 	useEffect(() => {
 		if (registered) dispatch(resetRegistered());
-	}, [registered]);
+	}, [registered, dispatch]);
 
 	const { email, password } = formData;
 
-	const onChange = e => {
+	const onChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const onSubmit = e => {
+	const onSubmit = (e) => {
 		e.preventDefault();
 
 		dispatch(login({ email, password }));
 	};
 
-	if (isAuthenticated) return <Navigate to='/dashboard' />;
+	if (isAuthenticated) return <Navigate to="/dashboard" />;
 
 	return (
-		<Layout title='SimpleNotes | login' content='Login page'>
+		<Layout title="SimpleNotes | login" content="Login page">
 			<h1>log into your account</h1>
-			<form className='mt-5' onSubmit={onSubmit}>
-				<div className='form-group'>
-					<label className='form-label' htmlFor='email'>
+			<form className="mt-5" onSubmit={onSubmit}>
+				<div className="form-group">
+					<label className="form-label" htmlFor="email">
 						email
 					</label>
 					<input
-						className='form-control'
-						type='email'
-						name='email'
+						className="form-control"
+						type="email"
+						name="email"
 						onChange={onChange}
 						value={email}
 						required
 					/>
 				</div>
-				<div className='form-group mt-3'>
-					<label className='form-label' htmlFor='password'>
+				<div className="form-group mt-3">
+					<label className="form-label" htmlFor="password">
 						password
 					</label>
 					<input
-						className='form-control'
-						type='password'
-						name='password'
+						className="form-control"
+						type="password"
+						name="password"
 						onChange={onChange}
 						value={password}
 						required
 					/>
 				</div>
 				{loading ? (
-					<div className='spinner-border text-primary' role='status'>
-						<span className='visually-hidden'>Loading...</span>
+					<div className="spinner-border text-primary" role="status">
+						<span className="visually-hidden">Loading...</span>
 					</div>
 				) : (
-					<button className='btn btn-primary mt-4'>Login</button>
+					<button className="btn btn-primary mt-4">Login</button>
 				)}
 			</form>
 		</Layout>
